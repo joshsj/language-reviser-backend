@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "ES6",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "outDir": "build",
+    "strict": true,
+    // Extra rules
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true
+  }
+}
