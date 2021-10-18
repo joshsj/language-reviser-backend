@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "ES6",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "outDir": "build",
+    "paths": { "@shared/*": ["../shared/*"] }
+  }
+}
