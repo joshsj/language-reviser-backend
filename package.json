@@ -1,0 +1,7 @@
+{
+  "name": "language-reviser",
+  "version": "1.0.0",
+  "scripts": {
+    "backend": "npm run start --prefix backend"
+  }
+}
