@@ -1,7 +1,7 @@
 import { red, green } from "picocolors";
 import { createServer } from "./connection";
-import { Logger } from "../../shared/utilities";
-import { Presentation } from "../../shared/message";
+import { Logger } from "@shared/utilities";
+import { Presentation } from "@shared/message";
 
 const port = parseInt(process.env.port!);
 

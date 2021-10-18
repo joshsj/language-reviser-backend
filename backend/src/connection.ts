@@ -1,6 +1,6 @@
 import Socket from "ws";
-import { Message, Presentation } from "../../shared/message";
-import { Logger, LoggerMode, _throw, _try } from "../../shared/utilities";
+import { Message, Presentation } from "@shared/message";
+import { Logger, LoggerMode, _throw, _try } from "@shared/utilities";
 
 const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
   s: string,
