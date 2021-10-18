@@ -1,6 +1,6 @@
 import Socket from "ws";
 import { Message, Requests, Responses } from "./message";
-import { Logger, LoggerMode, yeet, _try } from "./utilities";
+import { Logger, LoggerMode, _throw, _try } from "./utilities";
 
 type Handlers = { [K in Message]: (request: Requests[K]) => Responses[K] };
 
@@ -11,7 +11,7 @@ const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
 
 const configureHandlers = (socket: Socket, log: Logger, handlers: Handlers) => {
   socket.on("message", (raw) => {
-    yeet(
+    _throw(
       "Message was not sent as a Buffer",
       "internal",
       !(raw instanceof Buffer)
@@ -22,7 +22,7 @@ const configureHandlers = (socket: Socket, log: Logger, handlers: Handlers) => {
 
     const request = _try(
       () => JSON.parse(requestString),
-      () => yeet("Invalid request.", "external")
+      () => _throw("Invalid request.", "external")
     );
 
     const response = handlers[request.name as Message](request); // TODO: make safe

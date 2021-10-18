@@ -1,4 +1,4 @@
-const yeet = (
+const _throw = (
   message: string,
   type: "internal" | "external",
   condition = true
@@ -23,4 +23,4 @@ type Logger = (s: string, mode?: LoggerMode) => void;
 
 type Named<T> = { name: T };
 
-export { yeet, Logger, LoggerMode, Named, _try };
+export { _throw, Logger, LoggerMode, Named, _try };
