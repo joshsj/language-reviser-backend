@@ -1,12 +1,13 @@
 import { red, green } from "picocolors";
-import { createServer } from "./connection";
+import { createServer, Handlers } from "./connection";
 import { Logger } from "@shared/utilities";
-import { Presentation } from "@shared/message";
+import { validateAttempt } from "@shared/game";
 
 const port = parseInt(process.env.port!);
 
-const handlers: Presentation = {
+const handlers: Handlers = {
   newChallenge: () => ({ name: "newChallenge", answer: "test" }),
+  attempt: (a) => ({ name: "attempt", result: validateAttempt(a) }),
 };
 
 const logColor = {

@@ -1,21 +1,24 @@
-import { Challenge, ChallengeCategory } from "./game";
-import { Named } from "./utilities";
+import { Challenge, ChallengeCategory, Attempt, Result } from "./game";
 
-type Messages = {
+type Named<T> = {
+  [K in keyof T]: { name: K } & T[K];
+};
+
+type Requests = Named<{
   newChallenge: {
-    request: {
-      categories: ChallengeCategory[];
-    };
-    response: Challenge;
+    categories: ChallengeCategory[];
   };
-};
 
-type Message = keyof Messages;
+  attempt: Attempt;
+}>;
 
-type Presentation = {
-  [K in Message]: (
-    request: Messages[K]["request"] & Named<K>
-  ) => Messages[K]["response"] & Named<K>;
-};
+type Responses = Named<{
+  newChallenge: Challenge;
 
-export { Presentation, Message };
+  attempt: { result: Result };
+}>;
+
+type Request = keyof Requests;
+type Response = keyof Responses;
+
+export { Request, Requests, Response, Responses };

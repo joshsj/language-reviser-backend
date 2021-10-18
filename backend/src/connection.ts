@@ -1,17 +1,19 @@
 import Socket from "ws";
-import { Message, Presentation } from "@shared/message";
+import { Request, Requests, Response, Responses } from "@shared/message";
 import { Logger, LoggerMode, _throw, _try } from "@shared/utilities";
+
+type Handlers = {
+  [K in Request]: (
+    request: Requests[K]
+  ) => K extends Response ? Responses[K] : void;
+};
 
 const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
   s: string,
   mode?: LoggerMode
 ) => log(`${remoteAddress} > ${s}`, mode);
 
-const configureHandlers = (
-  socket: Socket,
-  log: Logger,
-  handlers: Presentation
-) => {
+const configureHandlers = (socket: Socket, log: Logger, handlers: Handlers) => {
   socket.on("message", (raw) => {
     _throw(
       "Message was not sent as a Buffer",
@@ -27,7 +29,7 @@ const configureHandlers = (
       () => _throw("Invalid request.", "external")
     );
 
-    const response = handlers[request.name as Message](request); // TODO: make safe
+    const response = handlers[request.name as Request](request); // TODO: make safe
 
     if (response) {
       const responseString = JSON.stringify(response);
@@ -44,7 +46,7 @@ const configureLogging = (socket: Socket, log: Logger) => {
   socket.on("close", () => log("Connection closed."));
 };
 
-const createServer = (port: number, handlers: Presentation, log?: Logger) => {
+const createServer = (port: number, handlers: Handlers, log?: Logger) => {
   const server = new Socket.Server({ port });
 
   server.on("connection", (socket, { socket: { remoteAddress } }) => {
@@ -55,4 +57,4 @@ const createServer = (port: number, handlers: Presentation, log?: Logger) => {
   });
 };
 
-export { createServer, Logger };
+export { createServer, Logger, Handlers };
