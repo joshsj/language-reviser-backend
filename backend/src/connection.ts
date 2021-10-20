@@ -1,12 +1,8 @@
 import Socket from "ws";
-import { Request, Requests, Response, Responses } from "@shared/message";
-import { Logger, LoggerMode, _throw, _try } from "@shared/utilities";
-
-type Handlers = {
-  [K in Request]: (
-    request: Requests[K]
-  ) => K extends Response ? Responses[K] : void;
-};
+import { Request } from "@shared/message";
+import { _throw, _try } from "@shared/utilities";
+import { Logger, LoggerMode } from "@shared/dependency";
+import { Handlers } from "./dependency";
 
 const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
   s: string,
@@ -46,7 +42,7 @@ const configureLogging = (socket: Socket, log: Logger) => {
   socket.on("close", () => log("Connection closed."));
 };
 
-const createServer = (port: number, handlers: Handlers, log?: Logger) => {
+const startServer = (port: number, handlers: Handlers, log?: Logger) => {
   const server = new Socket.Server({ port });
 
   server.on("connection", (socket, { socket: { remoteAddress } }) => {
@@ -57,4 +53,4 @@ const createServer = (port: number, handlers: Handlers, log?: Logger) => {
   });
 };
 
-export { createServer, Logger, Handlers };
+export { startServer };

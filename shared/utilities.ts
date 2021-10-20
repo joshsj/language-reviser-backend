@@ -18,9 +18,6 @@ const _try = <T = void>(f: () => T, _catch?: (e: unknown) => any) => {
   return void 0;
 };
 
-type LoggerMode = "info" | "good" | "bad";
-type Logger = (s: string, mode?: LoggerMode) => void;
-
 type Named<T> = { name: T };
 
-export { _throw, Logger, LoggerMode, Named, _try };
+export { _throw, Named, _try };

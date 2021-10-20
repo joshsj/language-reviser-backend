@@ -1,7 +1,8 @@
 import { red, green } from "picocolors";
-import { createServer, Handlers } from "./connection";
-import { Logger } from "@shared/utilities";
 import { validateAttempt } from "@shared/game";
+import { Handlers } from "./dependency";
+import { Logger } from "@shared/dependency";
+import { startServer } from "./connection";
 
 const port = parseInt(process.env.port!);
 
@@ -18,4 +19,4 @@ const logColor = {
 
 const log: Logger = (s, mode = "info") => console.log(logColor[mode](s));
 
-createServer(port, handlers, log);
+startServer(port, handlers, log);
