@@ -1,5 +1,5 @@
 import Socket from "ws";
-import { Request } from "@shared/message";
+import { ClientMessage } from "@shared/message";
 import { _throw, _try } from "@shared/utilities";
 import { Logger, LoggerMode } from "@shared/dependency";
 import { Handlers } from "./dependency";
@@ -9,28 +9,30 @@ const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
   mode?: LoggerMode
 ) => log(`${remoteAddress} > ${s}`, mode);
 
-const configureHandlers = (socket: Socket, log: Logger, handlers: Handlers) => {
-  socket.on("message", (raw) => {
+const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
+  client.on("message", (raw) => {
     _throw(
       "Message was not sent as a Buffer",
       "internal",
       !(raw instanceof Buffer)
     );
 
-    const requestString = raw.toString();
-    log(`Received ${requestString}.`);
+    const clientMessageString = raw.toString();
+    log(`Received ${clientMessageString}.`);
 
-    const request = _try(
-      () => JSON.parse(requestString),
+    const clientMessage = _try(
+      () => JSON.parse(clientMessageString),
       () => _throw("Invalid request.", "external")
     );
 
-    const response = handlers[request.name as Request](request); // TODO: make safe
+    const response = handlers[clientMessage.name as ClientMessage](
+      clientMessage
+    ); // TODO: make safe
 
     if (response) {
       const responseString = JSON.stringify(response);
       log(`Sending ${responseString}.`);
-      socket.send(responseString);
+      client.send(responseString);
     }
   });
 };

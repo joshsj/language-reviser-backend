@@ -1,10 +1,10 @@
 import { Challenge, ChallengeCategory, Attempt, Result } from "./game";
 
-type Named<T> = {
+type Named<T extends { [key: string]: {} }> = {
   [K in keyof T]: { name: K } & T[K];
 };
 
-type Requests = Named<{
+type ClientMessages = Named<{
   newChallenge: {
     categories: ChallengeCategory[];
   };
@@ -12,13 +12,13 @@ type Requests = Named<{
   attempt: Attempt;
 }>;
 
-type Responses = Named<{
+type ServerMessages = Named<{
   newChallenge: Challenge;
 
   attempt: { result: Result };
 }>;
 
-type Request = keyof Requests;
-type Response = keyof Responses;
+type ClientMessage = keyof ClientMessages;
+type ServerMessage = keyof ServerMessages;
 
-export { Request, Requests, Response, Responses };
+export { ClientMessage, ClientMessages, ServerMessage, ServerMessages };

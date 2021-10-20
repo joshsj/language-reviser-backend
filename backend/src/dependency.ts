@@ -1,9 +1,14 @@
-import { Request, Response, Requests, Responses } from "@shared/message";
+import {
+  ClientMessage,
+  ClientMessages,
+  ServerMessage,
+  ServerMessages,
+} from "@shared/message";
 
 type Handlers = {
-  [K in Request]: (
-    request: Requests[K]
-  ) => K extends Response ? Responses[K] : void;
+  [K in ClientMessage]: (
+    request: ClientMessages[K]
+  ) => K extends ServerMessage ? ServerMessages[K] : void;
 };
 
 export { Handlers };
