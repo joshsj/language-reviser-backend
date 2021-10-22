@@ -1,8 +1,7 @@
 import { red, green } from "picocolors";
 import { validateAttempt } from "@shared/game";
-import { Handlers } from "./dependency";
 import { Logger } from "@shared/dependency";
-import { startServer } from "./connection";
+import { Handlers, startServer } from "./server";
 
 const port = parseInt(process.env.port!);
 

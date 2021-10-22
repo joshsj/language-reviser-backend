@@ -1,8 +1,18 @@
 import Socket from "ws";
-import { ClientMessage } from "@shared/message";
 import { _throw, _try } from "@shared/utilities";
 import { Logger, LoggerMode } from "@shared/dependency";
-import { Handlers } from "./dependency";
+import {
+  ClientMessage,
+  ClientMessages,
+  ServerMessage,
+  ServerMessages,
+} from "@shared/message";
+
+type Handlers = {
+  [K in ClientMessage]: (
+    request: ClientMessages[K]
+  ) => K extends ServerMessage ? ServerMessages[K] : void;
+};
 
 const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
   s: string,
@@ -55,4 +65,4 @@ const startServer = (port: number, handlers: Handlers, log?: Logger) => {
   });
 };
 
-export { startServer };
+export { startServer, Handlers };
