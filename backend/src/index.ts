@@ -6,7 +6,13 @@ import { Handlers, startServer } from "./server";
 const port = parseInt(process.env.port!);
 
 const handlers: Handlers = {
-  newChallenge: () => ({ name: "newChallenge", answer: "test" }),
+  newChallenge: () => ({
+    name: "newChallenge",
+    answer: "suis",
+    hint: "être",
+    pre: "je",
+    post: "fatigué",
+  }),
   attempt: (a) => ({ name: "attempt", result: validateAttempt(a) }),
 };
 
