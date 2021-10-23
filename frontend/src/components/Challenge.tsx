@@ -1,4 +1,11 @@
-import { computed, defineComponent, PropType, StyleValue, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  PropType,
+  StyleValue,
+  ref,
+  watch,
+} from "vue";
 import { Challenge } from "@shared/game";
 import { emitT } from "../utilities";
 
@@ -32,11 +39,11 @@ const _Challenge = defineComponent({
   name: "Challenge",
   components: { Label },
   props: {
-    challenge: { type: Object as PropType<Challenge>, required: true },
+    challenge: Object as PropType<Challenge>,
     state: String as PropType<State>,
     stateTransitionTime: Number,
   },
-  emits: { attempt: emitT<string>() },
+  emits: { attempt: emitT<string>(), needChallenge: emitT<never>() },
   setup(props, { emit }) {
     const style = computed(
       (): StyleValue => ({
@@ -58,10 +65,15 @@ const _Challenge = defineComponent({
         outline: "none",
         backgroundColor: "transparent",
         width: `${Math.max(
-          props.challenge.answer.length,
-          props.challenge.hint?.length ?? 0
+          props.challenge?.answer.length ?? 0,
+          props.challenge?.hint?.length ?? 0
         )}ch`,
       })
+    );
+
+    watch(
+      () => props.challenge,
+      () => (inputValue.value = "")
     );
 
     const handleAttempt = (e: KeyboardEvent) => {
@@ -70,23 +82,31 @@ const _Challenge = defineComponent({
       }
 
       const trimmed = inputValue.value.trim();
-      trimmed.length && emit("attempt", "cool");
+      trimmed && emit("attempt", trimmed);
     };
 
     return () => (
       <div class="challenge" style={style.value}>
-        <Label text={props.challenge.pre} for={inputId} marginSide="right" />
+        <Label
+          text={props.challenge?.pre ?? ""}
+          for={inputId}
+          marginSide="right"
+        />
 
         <input
           v-model={inputValue.value}
           id={inputId}
-          placeholder={props.challenge.hint}
+          placeholder={props.challenge?.hint ?? ""}
           style={inputStyle.value}
           spellcheck="false"
           onKeypress={handleAttempt}
         />
 
-        <Label text={props.challenge.post} for={inputId} marginSide="left" />
+        <Label
+          text={props.challenge?.post ?? ""}
+          for={inputId}
+          marginSide="left"
+        />
       </div>
     );
   },

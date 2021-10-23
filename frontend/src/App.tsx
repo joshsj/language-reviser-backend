@@ -1,19 +1,48 @@
 import { Challenge } from "@shared/game";
-import { defineComponent, ref } from "vue";
+import { defineComponent, PropType, reactive, ref } from "vue";
 import { Challenge as ChallengeUI, State } from "./components/Challenge";
+import { Connection } from "./connection";
 
 const App = defineComponent({
   name: "App",
-  setup: () => {
+  props: {
+    connection: {
+      type: Object as PropType<Connection>,
+      required: true,
+    },
+  },
+  setup: (props) => {
+    const challenges = reactive<Challenge[]>([]);
     const stateTransitionTime = 250;
     const challengeState = ref<State | undefined>(undefined);
 
-    const testChallenge: Challenge = {
-      answer: "answer",
-      hint: "hint",
-      pre: "pre",
-      post: "post",
+    const blink = (state: State) => {
+      challengeState.value = state;
+      setTimeout(() => (challengeState.value = undefined), stateTransitionTime);
     };
+
+    const nextChallenge = () => {
+      challenges.shift();
+      props.connection.send({ name: "newChallenge", categories: ["verb"] });
+    };
+
+    const handleAttempt = (attempt: string) =>
+      props.connection.send({
+        name: "attempt",
+        attempt,
+        // TODO: update to answer id
+        actual: challenges[0]!.answer,
+      });
+
+    props.connection
+      .onReceive("newChallenge", (c) => challenges.push(c))
+      .onReceive("attempt", ({ result }) => {
+        blink(result === "correct" ? "good" : "bad");
+
+        result !== "incorrect" && nextChallenge();
+      });
+
+    nextChallenge();
 
     return () => (
       <div
@@ -25,10 +54,10 @@ const App = defineComponent({
         }}
       >
         <ChallengeUI
-          challenge={testChallenge}
+          challenge={challenges[0]}
           state={challengeState.value}
           stateTransitionTime={stateTransitionTime}
-          onAttempt={console.log}
+          onAttempt={handleAttempt}
         />
       </div>
     );
