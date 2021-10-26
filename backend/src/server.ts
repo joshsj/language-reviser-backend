@@ -35,7 +35,7 @@ const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
       () => _throw("Invalid request.", "external")
     );
 
-    const response = handlers[clientMessage.name as ClientMessage](
+    const response = handlers[clientMessage.name as ClientMessage]?.(
       clientMessage
     ); // TODO: make safe
 

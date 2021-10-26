@@ -5,15 +5,31 @@ import { Handlers, startServer } from "./server";
 
 const port = parseInt(process.env.port!);
 
-const handlers: Handlers = {
+// TODO: replace with actual implementation
+const testHandlers: Handlers = {
   newChallenge: () => ({
     name: "newChallenge",
-    answer: "suis",
-    hint: "être",
-    pre: "je",
-    post: "fatigué",
+    body: {
+      answer: "suis",
+      hint: "être",
+      pre: "je",
+      post: "fatigué",
+    },
   }),
-  attempt: (a) => ({ name: "attempt", result: validateAttempt(a) }),
+  attempt: ({ body }) => ({
+    name: "attempt",
+    body: { result: validateAttempt(body) },
+  }),
+  accents: () => ({
+    name: "accents",
+    body: {
+      a: ["à", "â"],
+      e: ["é", "ê", "è", "ë"],
+      i: ["î", "ï"],
+      o: ["ô"],
+      u: ["ù", "û", "ü"],
+    },
+  }),
 };
 
 const logColor = {
@@ -24,4 +40,4 @@ const logColor = {
 
 const log: Logger = (s, mode = "info") => console.log(logColor[mode](s));
 
-startServer(port, handlers, log);
+startServer(port, testHandlers, log);
