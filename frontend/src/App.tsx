@@ -18,7 +18,7 @@ const App = defineComponent({
     const challenges = reactive<Challenge[]>([]);
     const stateTransitionTime = 250;
     const challengeState = ref<State | undefined>(undefined);
-    let accentHelper = ref<AccentHelper | undefined>(undefined);
+    const accentHelper = ref<AccentHelper | undefined>(undefined);
 
     const blink = (state: State) => {
       challengeState.value = state;
