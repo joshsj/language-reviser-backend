@@ -5,12 +5,14 @@ import {
   StyleValue,
   ref,
   watch,
+  nextTick,
 } from "vue";
 import { Challenge } from "@shared/game";
-import { emitT } from "../utilities";
+import { AccentHelper, emitT } from "../utilities";
+
+type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
 
 type State = "good" | "bad";
-
 const stateColor = { good: "mediumseagreen", bad: "tomato" };
 
 const Label = defineComponent({
@@ -42,8 +44,12 @@ const _Challenge = defineComponent({
     challenge: Object as PropType<Challenge>,
     state: String as PropType<State>,
     stateTransitionTime: Number,
+    accentHelper: Object as PropType<AccentHelper>,
   },
-  emits: { attempt: emitT<string>(), needChallenge: emitT<never>() },
+  emits: {
+    attempt: emitT<string>(),
+    skip: emitT(),
+  },
   setup(props, { emit }) {
     const style = computed(
       (): StyleValue => ({
@@ -59,15 +65,18 @@ const _Challenge = defineComponent({
 
     const inputValue = ref("");
     const inputId = "challenge-input";
+    const inputWidth = computed(() =>
+      Math.max(
+        props.challenge?.answer.length ?? 0,
+        props.challenge?.hint?.length ?? 0
+      )
+    );
     const inputStyle = computed(
       (): StyleValue => ({
         border: "none",
         outline: "none",
         backgroundColor: "transparent",
-        width: `${Math.max(
-          props.challenge?.answer.length ?? 0,
-          props.challenge?.hint?.length ?? 0
-        )}ch`,
+        width: `${inputWidth.value}ch`,
       })
     );
 
@@ -76,37 +85,46 @@ const _Challenge = defineComponent({
       () => (inputValue.value = "")
     );
 
-    const handleAttempt = (e: KeyboardEvent) => {
-      if (e.key !== "Enter") {
-        return;
-      }
+    const keyDownHandlers: Record<string, (ev: InputKeyboardEvent) => void> = {
+      " ": (ev) => ev.preventDefault(),
+      Enter: () => emit("attempt", inputValue.value),
+      Tab: (ev) => {
+        ev.preventDefault();
 
-      const trimmed = inputValue.value.trim();
-      trimmed && emit("attempt", trimmed);
+        const [start, end] = [
+          ev.target.selectionStart!,
+          ev.target.selectionEnd!,
+        ];
+        const letterIndex = start - 1;
+
+        inputValue.value =
+          inputValue.value.slice(0, letterIndex) +
+          props.accentHelper?.next(inputValue.value[letterIndex]!) +
+          inputValue.value.slice(letterIndex + 1);
+
+        nextTick(() => ev.target.setSelectionRange(start, end));
+      },
+      Escape: () => emit("skip"),
     };
+
+    const handleKeydown = (ev: KeyboardEvent) =>
+      keyDownHandlers[ev.key]?.(ev as InputKeyboardEvent);
 
     return () => (
       <div class="challenge" style={style.value}>
-        <Label
-          text={props.challenge?.pre ?? ""}
-          for={inputId}
-          marginSide="right"
-        />
+        <Label text={props.challenge?.pre} for={inputId} marginSide="right" />
 
         <input
           v-model={inputValue.value}
           id={inputId}
-          placeholder={props.challenge?.hint ?? ""}
+          placeholder={props.challenge?.hint}
+          maxlength={inputWidth.value}
           style={inputStyle.value}
+          onKeydown={handleKeydown}
           spellcheck="false"
-          onKeypress={handleAttempt}
         />
 
-        <Label
-          text={props.challenge?.post ?? ""}
-          for={inputId}
-          marginSide="left"
-        />
+        <Label text={props.challenge?.post} for={inputId} marginSide="left" />
       </div>
     );
   },

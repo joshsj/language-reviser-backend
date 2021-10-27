@@ -18,6 +18,4 @@ const _try = <T = void>(f: () => T, _catch?: (e: unknown) => any) => {
   return void 0;
 };
 
-type Named<T> = { name: T };
-
-export { _throw, Named, _try };
+export { _throw, _try };

@@ -15,12 +15,10 @@ type Connection = {
 };
 
 type ReceiveHandler<T extends ServerMessage> = (
-  message: ServerMessages[T]
+  body: ServerMessages[T]["body"]
 ) => void;
 
-type ReceiveHandlers = {
-  [K in ServerMessage]?: ReceiveHandler<K>[];
-};
+type ReceiveHandlers = { [K in ServerMessage]?: ReceiveHandler<K>[] };
 
 const resolveHandlers = <T extends ServerMessage>(
   handlers: ReceiveHandlers,
@@ -41,10 +39,12 @@ const createConnection = (url: string): Promise<Connection> => {
   socket.addEventListener("message", ({ data }) => {
     const message = JSON.parse(data);
 
+    const [name, body] = [message.name, message.body];
+
     resolveHandlers(
       receiveHandlers,
-      message.name as ServerMessage // TODO: make safe
-    ).forEach((f) => f(message));
+      name // TODO: make safe
+    ).forEach((f) => f(body));
   });
 
   const connection: Connection = {

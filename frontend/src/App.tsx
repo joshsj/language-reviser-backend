@@ -2,6 +2,9 @@ import { Challenge } from "@shared/game";
 import { defineComponent, PropType, reactive, ref } from "vue";
 import { Challenge as ChallengeUI, State } from "./components/Challenge";
 import { Connection } from "./connection";
+import { AccentHelper, createAccentHelper } from "./utilities";
+
+const InitialChallengeCount = 3;
 
 const App = defineComponent({
   name: "App",
@@ -15,34 +18,51 @@ const App = defineComponent({
     const challenges = reactive<Challenge[]>([]);
     const stateTransitionTime = 250;
     const challengeState = ref<State | undefined>(undefined);
+    let accentHelper = ref<AccentHelper | undefined>(undefined);
 
     const blink = (state: State) => {
       challengeState.value = state;
       setTimeout(() => (challengeState.value = undefined), stateTransitionTime);
     };
 
-    const nextChallenge = () => {
-      challenges.shift();
-      props.connection.send({ name: "newChallenge", categories: ["verb"] });
+    const getChallenge = (n: number = 1) => {
+      for (let i = 0; i < n; ++i) {
+        props.connection.send({
+          name: "newChallenge",
+          body: { categories: ["verb"] },
+        });
+      }
     };
 
     const handleAttempt = (attempt: string) =>
       props.connection.send({
         name: "attempt",
-        attempt,
-        // TODO: update to answer id
-        actual: challenges[0]!.answer,
+        body: {
+          attempt,
+          // TODO: update to answer id
+          actual: challenges[0]!.answer,
+        },
       });
+
+    const handleResult = (correct: boolean | "skip") => {
+      blink(correct === true ? "good" : "bad");
+
+      if (correct !== false) {
+        challenges.shift();
+        getChallenge();
+      }
+    };
 
     props.connection
       .onReceive("newChallenge", (c) => challenges.push(c))
-      .onReceive("attempt", ({ result }) => {
-        blink(result === "correct" ? "good" : "bad");
+      .onReceive("attempt", (body) => handleResult(body.result))
+      .onReceive(
+        "accents",
+        (accents) => (accentHelper.value = createAccentHelper(accents))
+      );
 
-        result !== "incorrect" && nextChallenge();
-      });
-
-    nextChallenge();
+    getChallenge(InitialChallengeCount);
+    props.connection.send({ name: "accents" });
 
     return () => (
       <div
@@ -58,6 +78,8 @@ const App = defineComponent({
           state={challengeState.value}
           stateTransitionTime={stateTransitionTime}
           onAttempt={handleAttempt}
+          onSkip={() => handleResult("skip")}
+          accentHelper={accentHelper.value}
         />
       </div>
     );
