@@ -96,10 +96,11 @@ const _Challenge = defineComponent({
           ev.target.selectionEnd!,
         ];
         const letterIndex = start - 1;
+        const letter = inputValue.value[letterIndex];
 
         inputValue.value =
           inputValue.value.slice(0, letterIndex) +
-          props.accentHelper?.next(inputValue.value[letterIndex]!) +
+          props.accentHelper?.next(letter) +
           inputValue.value.slice(letterIndex + 1);
 
         nextTick(() => ev.target.setSelectionRange(start, end));
