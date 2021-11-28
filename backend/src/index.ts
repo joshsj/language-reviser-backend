@@ -1,12 +1,14 @@
 import { red, green } from "picocolors";
+
+import * as server from "./server";
+import * as db from "./data/connection";
+import { getEnv } from "./utilities";
+
 import { validateAttempt } from "@shared/game";
 import { Logger } from "@shared/dependency";
-import { Handlers, startServer } from "./server";
-
-const port = parseInt(process.env.port!);
 
 // TODO: replace with actual implementation
-const testHandlers: Handlers = {
+const testHandlers: server.Handlers = {
   newChallenge: () => ({
     name: "newChallenge",
     body: {
@@ -16,10 +18,12 @@ const testHandlers: Handlers = {
       post: "fatigué",
     },
   }),
+
   attempt: ({ body }) => ({
     name: "attempt",
     body: { result: validateAttempt(body) },
   }),
+
   accents: () => ({
     name: "accents",
     body: {
@@ -40,4 +44,12 @@ const logColor = {
 
 const log: Logger = (s, mode = "info") => console.log(logColor[mode](s));
 
-startServer(port, testHandlers, log);
+const main = async () => {
+  const env = getEnv();
+
+  await db.createConnection(env.mongoDatabase, env.mongoHost, env.mongoPort);
+
+  server.createServer().start(env.socketPort, testHandlers, log);
+};
+
+main();

@@ -14,10 +14,10 @@ type Handlers = {
   ) => K extends ServerMessage ? ServerMessages[K] : void;
 };
 
-const wrapLogger = (log: Logger, remoteAddress: string): Logger => (
-  s: string,
-  mode?: LoggerMode
-) => log(`${remoteAddress} > ${s}`, mode);
+const wrapLogger =
+  (log: Logger, remoteAddress: string): Logger =>
+  (s: string, mode?: LoggerMode) =>
+    log(`${remoteAddress} > ${s}`, mode);
 
 const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
   client.on("message", (raw) => {
@@ -35,9 +35,8 @@ const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
       () => _throw("Invalid request.", "external")
     );
 
-    const response = handlers[clientMessage.name as ClientMessage]?.(
-      clientMessage
-    ); // TODO: make safe
+    const response =
+      handlers[clientMessage.name as ClientMessage]?.(clientMessage); // TODO: make safe
 
     if (response) {
       const responseString = JSON.stringify(response);
@@ -54,15 +53,17 @@ const configureLogging = (socket: Socket, log: Logger) => {
   socket.on("close", () => log("Connection closed."));
 };
 
-const startServer = (port: number, handlers: Handlers, log?: Logger) => {
-  const server = new Socket.Server({ port });
+const createServer = () => ({
+  start: (port: number, handlers: Handlers, log?: Logger) => {
+    const server = new Socket.Server({ host: "localhost", port });
 
-  server.on("connection", (socket, { socket: { remoteAddress } }) => {
-    const logger = log ? wrapLogger(log, remoteAddress ?? "") : () => void 0;
+    server.on("connection", (socket, { socket: { remoteAddress } }) => {
+      const logger = log ? wrapLogger(log, remoteAddress ?? "") : () => void 0;
 
-    configureLogging(socket, logger);
-    configureHandlers(socket, logger, handlers);
-  });
-};
+      configureLogging(socket, logger);
+      configureHandlers(socket, logger, handlers);
+    });
+  },
+});
 
-export { startServer, Handlers };
+export { createServer, Handlers };
