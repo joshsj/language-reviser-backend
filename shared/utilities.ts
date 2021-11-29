@@ -1,10 +1,6 @@
-const _throw = (
-  message: string,
-  type: "internal" | "external",
-  condition = true
-) => {
+const _throw = (message: string, condition = true) => {
   if (condition) {
-    throw { message, type };
+    throw { message };
   }
 };
 

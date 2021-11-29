@@ -1,3 +1,6 @@
+import { Logger } from "@shared/dependency";
+import { red, green } from "picocolors";
+
 type Env = {
   socketPort: number;
   mongoDatabase: string;
@@ -19,4 +22,12 @@ const getEnv = (): Env => {
   };
 };
 
-export { Env, getEnv };
+const logColor = {
+  good: green,
+  bad: red,
+  info: (s: string) => s,
+};
+
+const log: Logger = (s, mode = "info") => console.log(logColor[mode](s));
+
+export { Env, getEnv, log };

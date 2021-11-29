@@ -2,9 +2,7 @@
   "name": "language-revisor-frontend",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
+    "start": "vite"
   },
   "dependencies": {
     "@vitejs/plugin-vue-jsx": "^1.2.0",

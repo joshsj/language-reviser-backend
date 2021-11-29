@@ -5,7 +5,11 @@ import {
   modelOptions,
   prop,
 } from "@typegoose/typegoose";
-import { IModelOptions } from "@typegoose/typegoose/lib/types";
+import {
+  BeAnObject,
+  IModelOptions,
+  ReturnModelType,
+} from "@typegoose/typegoose/lib/types";
 
 const required = true;
 
@@ -23,11 +27,9 @@ class WordSchema<TType extends string> implements BaseWord<TType> {
   @prop({ required })
   english!: string;
 
-  @prop()
-  context?: string;
+  @prop({ type: String })
+  context: string | undefined;
 }
-
-const WordModel = getModelForClass(WordSchema);
 
 class NounSchema extends WordSchema<"noun"> implements Noun {
   @prop({ required })
@@ -45,7 +47,6 @@ class NounSchema extends WordSchema<"noun"> implements Noun {
   @prop({ required })
   femininePlural!: string;
 }
-getDiscriminatorModelForClass(WordModel, NounSchema, "noun");
 
 class VerbSchema extends WordSchema<"verb"> implements Verb {
   @prop({ required })
@@ -54,6 +55,15 @@ class VerbSchema extends WordSchema<"verb"> implements Verb {
   @prop()
   irregularForms: VerbForms | undefined;
 }
-getDiscriminatorModelForClass(WordModel, VerbSchema, "verb");
 
-export { WordModel };
+type Words = ReturnModelType<typeof WordSchema, BeAnObject>;
+
+const createModels = (): Words => {
+  const WordModel = getModelForClass(WordSchema);
+  getDiscriminatorModelForClass(WordModel, NounSchema, "noun");
+  getDiscriminatorModelForClass(WordModel, VerbSchema, "verb");
+
+  return WordModel;
+};
+
+export { createModels, Words };
