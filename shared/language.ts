@@ -17,23 +17,6 @@ type NounType =
   // Intersect ensures correct implementation in array
   `${Gender}${Capitalize<Plurality>}` & typeof NounTypes[number];
 
-type VerbForms = { [K in Subject]: string };
-
-type BaseWord<TType extends string> = {
-  type: TType;
-  english: string;
-  context?: string;
-};
-
-type Noun = BaseWord<"noun"> & { gender: Gender } & { [K in NounType]: string };
-
-type Verb = BaseWord<"verb"> & {
-  infinitive: string;
-  irregularForms?: VerbForms;
-};
-
-type Word = Noun | Verb;
-
 const Accents = {
   a: ["à", "â"],
   e: ["é", "ê", "è", "ë"],
@@ -43,17 +26,12 @@ const Accents = {
 } as const;
 
 export {
-  BaseWord,
-  Word,
-  Noun,
-  Verb,
   Genders,
   Gender,
   Pluralities,
   Plurality,
   Subjects,
   Subject,
-  VerbForms,
   Accents,
   NounTypes,
   NounType,

@@ -1,12 +1,5 @@
-import {
-  Noun,
-  NounTypes,
-  Word,
-  NounType,
-  Verb,
-  Subjects,
-} from "@shared/language";
-import { ActiveChallenge } from "../db/message";
+import { NounType, NounTypes, Subjects } from "@shared/language";
+import { Word, ActiveChallenge, Noun, Verb } from "../db/types";
 
 // TODO: tidy, TS doesn't like 'as const' declaration
 const random = (n: number) => Math.round(Math.random() * (n - 1));
@@ -35,9 +28,8 @@ const converters: Converters = {
   verb: (verb: Verb): ActiveChallenge => {
     const subject = Subjects[random(Subjects.length)]!;
 
-    // TODO: remove after Form refactor
     return {
-      answer: verb.irregularForms?.[subject] ?? "TODO",
+      answer: verb.forms[subject],
       hint: verb.infinitive,
       pre: subject,
     };

@@ -1,5 +1,5 @@
-import { Verb, VerbForms } from "@shared/language";
 import { prop } from "@typegoose/typegoose";
+import { Verb, VerbForms } from "../types";
 import { WordSchema } from "./word";
 
 const required = true;
@@ -29,7 +29,7 @@ class VerbSchema extends WordSchema<"verb"> implements Verb {
   infinitive!: string;
 
   @prop({ type: VerbFormsSchema })
-  irregularForms: VerbForms | undefined;
+  forms!: VerbForms;
 }
 
 export { VerbSchema };

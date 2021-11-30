@@ -1,12 +1,12 @@
-import { Models } from "../db/models";
-import { toActiveChallenge } from "./game";
-import { Word } from "@shared/language";
 import {
   ClientMessage,
   ClientMessageName,
   ServerMessage,
   ServerMessageName,
 } from "@shared/message";
+import { Models } from "../db/models";
+import { toActiveChallenge } from "./game";
+import { Word } from "../db/types";
 
 type Handler<T extends ClientMessageName> = (
   message: Extract<ClientMessage, { name: T }>
@@ -22,7 +22,6 @@ const createHandlers = ({ Words }: Models): Handlers => ({
   newChallenge: [
     async () => {
       const word: Word = (await Words.aggregate([{ $sample: { size: 1 } }]))[0];
-      console.log(word);
 
       return Promise.resolve({
         name: "newChallenge",

@@ -1,18 +1,22 @@
-import { BaseWord } from "@shared/language";
+import { BaseWord } from "../types";
 import { modelOptions, prop } from "@typegoose/typegoose";
 import { IModelOptions } from "@typegoose/typegoose/lib/types";
+import { Types } from "mongoose";
 
 const required = true;
 
-const baseOptions: IModelOptions = {
+const options: IModelOptions = {
   schemaOptions: {
-    collection: "word",
+    collection: "words",
     discriminatorKey: "type",
   },
 };
 
-@modelOptions(baseOptions)
+@modelOptions(options)
 class WordSchema<TType extends string> implements BaseWord<TType> {
+  @prop()
+  _id!: Types.ObjectId;
+
   readonly type!: TType;
 
   @prop({ required })
