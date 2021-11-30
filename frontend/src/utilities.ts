@@ -1,4 +1,4 @@
-import { ServerMessages } from "@shared/message";
+import { Accents } from "@shared/language";
 
 type NoPayload = undefined;
 
@@ -29,14 +29,12 @@ const next = (accents: string[][], char: string): string => {
   return char;
 };
 
-const createAccentHelper = (
-  body: ServerMessages["accents"]["body"]
-): AccentHelper => {
-  const accents = Object.entries(body).map((x) => [x[0], ...x[1]]);
+const accentHelper = ((): AccentHelper => {
+  const accents = Object.entries(Accents).map((x) => [x[0], ...x[1]]);
 
   return {
     next: (char) => next(accents, char),
   };
-};
+})();
 
-export { emitT, AccentHelper, createAccentHelper };
+export { emitT, AccentHelper, accentHelper };

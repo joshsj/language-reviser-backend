@@ -18,7 +18,7 @@ type VerbForms = { [K in Subject]: string };
 type BaseWord<TType extends string> = {
   type: TType;
   english: string;
-  context: string | undefined
+  context: string | undefined;
 };
 
 type Noun = BaseWord<"noun"> & { gender: Gender } & {
@@ -32,6 +32,14 @@ type Verb = BaseWord<"verb"> & {
 
 type Word = Noun | Verb;
 
+const Accents = {
+  a: ["à", "â"],
+  e: ["é", "ê", "è", "ë"],
+  i: ["î", "ï"],
+  o: ["ô"],
+  u: ["ù", "û", "ü"],
+} as const;
+
 export {
   BaseWord,
   Word,
@@ -44,4 +52,5 @@ export {
   Subjects,
   Subject,
   VerbForms,
+  Accents,
 };

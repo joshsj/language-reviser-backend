@@ -8,7 +8,7 @@ import {
   nextTick,
 } from "vue";
 import { Challenge } from "@shared/game";
-import { AccentHelper, emitT } from "../utilities";
+import { accentHelper, emitT } from "../utilities";
 
 type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
 
@@ -44,7 +44,6 @@ const _Challenge = defineComponent({
     challenge: Object as PropType<Challenge>,
     state: String as PropType<State>,
     stateTransitionTime: Number,
-    accentHelper: Object as PropType<AccentHelper>,
   },
   emits: {
     attempt: emitT<string>(),
@@ -98,9 +97,13 @@ const _Challenge = defineComponent({
         const letterIndex = start - 1;
         const letter = inputValue.value[letterIndex];
 
+        if (!letter) {
+          return;
+        }
+
         inputValue.value =
           inputValue.value.slice(0, letterIndex) +
-          props.accentHelper?.next(letter) +
+          accentHelper.next(letter) +
           inputValue.value.slice(letterIndex + 1);
 
         nextTick(() => ev.target.setSelectionRange(start, end));

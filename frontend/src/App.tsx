@@ -2,7 +2,6 @@ import { Challenge } from "@shared/game";
 import { defineComponent, PropType, reactive, ref } from "vue";
 import { Challenge as ChallengeUI, State } from "./components/Challenge";
 import { Connection } from "./connection";
-import { AccentHelper, createAccentHelper } from "./utilities";
 
 const InitialChallengeCount = 3;
 
@@ -18,7 +17,6 @@ const App = defineComponent({
     const challenges = reactive<Challenge[]>([]);
     const stateTransitionTime = 250;
     const challengeState = ref<State | undefined>(undefined);
-    const accentHelper = ref<AccentHelper | undefined>(undefined);
 
     const blink = (state: State) => {
       challengeState.value = state;
@@ -54,15 +52,12 @@ const App = defineComponent({
     };
 
     props.connection
-      .onReceive("newChallenge", (c) => challenges.push(c))
-      .onReceive("attempt", (body) => handleResult(body.result))
-      .onReceive(
-        "accents",
-        (accents) => (accentHelper.value = createAccentHelper(accents))
-      );
+      .onReceive("newChallenge", ({ body }) => {
+        challenges.push(body);
+      })
+      .onReceive("attempt", ({ body }) => handleResult(body.result));
 
     getChallenge(InitialChallengeCount);
-    props.connection.send({ name: "accents" });
 
     return () => (
       <div
@@ -79,7 +74,6 @@ const App = defineComponent({
           stateTransitionTime={stateTransitionTime}
           onAttempt={handleAttempt}
           onSkip={() => handleResult("skip")}
-          accentHelper={accentHelper.value}
         />
       </div>
     );

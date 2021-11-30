@@ -1,32 +1,19 @@
 import { Challenge, ChallengeCategory, Attempt } from "./game";
 
-type Message<TName, TBody> = TBody extends undefined
-  ? { name: TName }
-  : { name: TName; body: TBody };
+type ClientMessage =
+  | {
+      name: "newChallenge";
+      body: {
+        categories: ChallengeCategory[];
+      };
+    }
+  | { name: "attempt"; body: Attempt };
 
-type MapMessages<T extends { [key: string]: {} | undefined }> = {
-  [K in keyof T]: Message<K, T[K]>;
-};
+type ServerMessage =
+  | { name: "newChallenge"; body: Challenge }
+  | { name: "attempt"; body: { result: boolean } };
 
-type ClientMessages = MapMessages<{
-  newChallenge: {
-    categories: ChallengeCategory[];
-  };
+type ClientMessageName = ClientMessage["name"];
+type ServerMessageName = ServerMessage["name"];
 
-  attempt: Attempt;
-
-  accents: undefined;
-}>;
-
-type ServerMessages = MapMessages<{
-  newChallenge: Challenge;
-
-  attempt: { result: boolean };
-
-  accents: Record<string, string[]>;
-}>;
-
-type ClientMessage = keyof ClientMessages;
-type ServerMessage = keyof ServerMessages;
-
-export { ClientMessage, ClientMessages, ServerMessage, ServerMessages };
+export { ClientMessage, ServerMessage, ClientMessageName, ServerMessageName };

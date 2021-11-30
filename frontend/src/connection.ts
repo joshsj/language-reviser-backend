@@ -1,35 +1,34 @@
 import {
   ClientMessage,
-  ClientMessages,
   ServerMessage,
-  ServerMessages,
+  ServerMessageName,
 } from "@shared/message";
 
 type Connection = {
-  send: (message: ClientMessages[ClientMessage]) => Connection;
+  send: (message: ClientMessage) => Connection;
 
-  onReceive: <T extends ServerMessage>(
+  onReceive: <T extends ServerMessageName>(
     name: T,
     callback: ReceiveHandler<T>
   ) => Connection;
 };
 
-type ReceiveHandler<T extends ServerMessage> = (
-  body: ServerMessages[T]["body"]
+type ReceiveHandler<T extends ServerMessageName> = (
+  message: Extract<ServerMessage, { name: T }>
 ) => void;
 
-type ReceiveHandlers = { [K in ServerMessage]?: ReceiveHandler<K>[] };
+type ReceiveHandlers = { [K in ServerMessageName]?: ReceiveHandler<K>[] };
 
-const resolveHandlers = <T extends ServerMessage>(
+const resolveHandlers = <T extends ServerMessageName>(
   handlers: ReceiveHandlers,
   name: T
-): ReceiveHandler<T>[] => {
+) => {
   if (!handlers[name]) {
     handlers[name] = [];
   }
 
   // TODO: remove assertion, this should work tho 🤔
-  return handlers[name]! as ReceiveHandler<T>[];
+  return handlers[name]! as unknown as ReceiveHandler<T>[];
 };
 
 const createConnection = (url: string): Promise<Connection> => {
@@ -39,12 +38,10 @@ const createConnection = (url: string): Promise<Connection> => {
   socket.addEventListener("message", ({ data }) => {
     const message = JSON.parse(data);
 
-    const [name, body] = [message.name, message.body];
-
     resolveHandlers(
       receiveHandlers,
-      name // TODO: make safe
-    ).forEach((f) => f(body));
+      message.name // TODO: make safe
+    ).forEach((f) => f(message));
   });
 
   const connection: Connection = {
