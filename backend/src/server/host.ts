@@ -1,7 +1,7 @@
 import Socket from "ws";
 import { _throw, _try } from "@shared/utilities";
 import { Logger, LoggerMode } from "@shared/dependency";
-import { ClientMessageName } from "@shared/message";
+import { ClientMessageName, ServerMessage } from "@shared/message";
 import { Handlers } from "./handlers";
 
 const wrapLogger =
@@ -16,7 +16,7 @@ const configureLogging = (socket: Socket, log: Logger) => {
   socket.on("close", () => log("Connection closed."));
 };
 
-const handleResponse = (client: Socket, log: Logger, response: unknown) => {
+const sendResponse = (client: Socket, log: Logger, response: ServerMessage) => {
   const responseString = JSON.stringify(response);
   log(`Sending ${responseString}.`);
   client.send(responseString);
@@ -32,9 +32,11 @@ const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
     const clientMessage = JSON.parse(clientMessageString);
 
     // TODO: make safe
-    handlers[clientMessage.name as ClientMessageName]
-      .map((h) => h(clientMessage))
-      .forEach((r) => r && handleResponse(client, log, r));
+    handlers[clientMessage.name as ClientMessageName].forEach((handler) =>
+      handler(clientMessage).then((response) =>
+        sendResponse(client, log, response)
+      )
+    );
   });
 };
 

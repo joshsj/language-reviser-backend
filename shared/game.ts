@@ -1,5 +1,4 @@
 type Challenge = {
-  answer: string;
   hint?: string;
   pre?: string;
   post?: string;

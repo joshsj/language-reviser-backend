@@ -15,7 +15,7 @@
   },
   "scripts": {
     "prestart": "npx tsc --build",
-    "start": "node -r dotenv/config -r module-alias/register build/backend/src/index.js",
+    "start": "node -r module-alias/register -r dotenv/config  build/backend/src/index.js",
     "poststart": "npm run clean",
     "clean": "npx tsc --build --clean"
   },

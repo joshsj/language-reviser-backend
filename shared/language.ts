@@ -7,27 +7,29 @@ type Plurality = typeof Pluralities[number];
 const Subjects = ["je", "tu", "il", "nous", "vous", "ils"] as const;
 type Subject = typeof Subjects[number];
 
-type VerbForms = { [K in Subject]: string };
+const NounTypes = Object.freeze([
+  "masculineSingular",
+  "masculinePlural",
+  "feminineSingular",
+  "femininePlural",
+] as const);
+type NounType =
+  // Intersect ensures correct implementation in array
+  `${Gender}${Capitalize<Plurality>}` & typeof NounTypes[number];
 
-/* 
-  Note:
-  Optional members are better defined with "| undefined" over "?",
-  as it still requires a prop in the schema definition
-*/
+type VerbForms = { [K in Subject]: string };
 
 type BaseWord<TType extends string> = {
   type: TType;
   english: string;
-  context: string | undefined;
+  context?: string;
 };
 
-type Noun = BaseWord<"noun"> & { gender: Gender } & {
-  [K in `${Gender}${Capitalize<Plurality>}`]: string;
-};
+type Noun = BaseWord<"noun"> & { gender: Gender } & { [K in NounType]: string };
 
 type Verb = BaseWord<"verb"> & {
   infinitive: string;
-  irregularForms: VerbForms | undefined;
+  irregularForms?: VerbForms;
 };
 
 type Word = Noun | Verb;
@@ -53,4 +55,6 @@ export {
   Subject,
   VerbForms,
   Accents,
+  NounTypes,
+  NounType,
 };

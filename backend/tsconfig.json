@@ -11,7 +11,8 @@
     "emitDecoratorMetadata": true,
     "outDir": "build",
     "paths": {
-      "@/*": ["./src/*"],
+      // TODO: work out why this isn't working
+      // "@/*": ["./src/*"],
       "@shared/*": ["../shared/*"]
     }
   }

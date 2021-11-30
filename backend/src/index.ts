@@ -6,9 +6,14 @@ import { createHandlers } from "./server/handlers";
 const main = async () => {
   const env = getEnv();
 
-  const handlers = createHandlers();
+  const { models } = await db.createConnection(
+    env.mongoDatabase,
+    env.mongoHost,
+    env.mongoPort
+  );
 
-  await db.createConnection(env.mongoDatabase, env.mongoHost, env.mongoPort);
+  const handlers = createHandlers(models);
+
   server.createServer().start(env.socketPort, handlers, log);
 };
 

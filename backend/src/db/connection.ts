@@ -6,12 +6,12 @@ const createConnection = async (
   host: string,
   port: number
 ) => {
-  const words = createModels();
+  const models = createModels();
   const connection = await connect(`mongodb://${host}:${port}`, {
     dbName: database,
   });
 
-  return { words, connection };
+  return { models, connection };
 };
 
 export { createConnection };
