@@ -1,4 +1,3 @@
-import { validateAttempt } from "@shared/game";
 import {
   ClientMessage,
   ClientMessageName,
@@ -28,9 +27,10 @@ const createHandlers = (): Handlers => ({
   ],
 
   attempt: [
-    ({ body }) => ({
+    () => ({
       name: "attempt",
-      body: { result: validateAttempt(body) },
+      // TODO: implement
+      body: { result: Math.random() > 0.25 },
     }),
   ],
 });
