@@ -1,11 +1,9 @@
-import { Challenge, ChallengeCategory, Attempt } from "./game";
+import { Challenge, Attempt } from "./game";
 
 type ClientMessage =
   | {
       name: "newChallenge";
-      body: {
-        categories: ChallengeCategory[];
-      };
+      body: undefined;
     }
   | { name: "attempt"; body: Attempt };
 
