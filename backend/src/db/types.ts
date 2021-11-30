@@ -1,7 +1,10 @@
 import { Challenge } from "@shared/game";
 import { Subject, Gender, NounType } from "@shared/language";
+import { Base } from "@typegoose/typegoose/lib/defaultClasses";
 
-type BaseWord<TType extends string> = {
+type Entity = Pick<Base, "_id">;
+
+type BaseWord<TType extends string> = Entity & {
   type: TType;
   english: string;
   context?: string;
@@ -18,6 +21,7 @@ type Verb = BaseWord<"verb"> & {
 
 type Word = Noun | Verb;
 
-type ActiveChallenge = Challenge & { answer: string };
+type ActiveChallenge = Entity &
+  Pick<Challenge, "hint" | "pre" | "post"> & { answer: string };
 
-export { Word, Noun, Verb, VerbForms, ActiveChallenge, BaseWord };
+export { Word, Noun, Verb, VerbForms, Entity, ActiveChallenge, BaseWord };

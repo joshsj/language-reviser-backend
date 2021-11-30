@@ -1,5 +1,5 @@
 import { Challenge } from "@shared/game";
-import { defineComponent, PropType, reactive, ref } from "vue";
+import { computed, defineComponent, PropType, reactive, ref } from "vue";
 import { Challenge as ChallengeUI, State } from "./components/Challenge";
 import { Connection } from "./connection";
 
@@ -32,14 +32,12 @@ const App = defineComponent({
       }
     };
 
+    const currentChallenge = computed(() => challenges[0]);
+
     const handleAttempt = (attempt: string) =>
       props.connection.send({
         name: "attempt",
-        body: {
-          attempt,
-          // TODO: update to answer id
-          actual: challenges[0]!.answer,
-        },
+        body: { challengeId: currentChallenge.value!.challengeId, attempt },
       });
 
     const handleResult = (correct: boolean | "skip") => {
@@ -53,7 +51,7 @@ const App = defineComponent({
 
     props.connection
       .onReceive("newChallenge", ({ body }) => {
-        challenges.push(body);
+        body && challenges.push(body);
       })
       .onReceive("attempt", ({ body }) => handleResult(body.result));
 
@@ -69,7 +67,7 @@ const App = defineComponent({
         }}
       >
         <ChallengeUI
-          challenge={challenges[0]}
+          challenge={currentChallenge.value}
           state={challengeState.value}
           stateTransitionTime={stateTransitionTime}
           onAttempt={handleAttempt}

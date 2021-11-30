@@ -66,7 +66,7 @@ const _Challenge = defineComponent({
     const inputId = "challenge-input";
     const inputWidth = computed(() =>
       Math.max(
-        props.challenge?.answer.length ?? 0,
+        props.challenge?.answerLength ?? 0,
         props.challenge?.hint?.length ?? 0
       )
     );

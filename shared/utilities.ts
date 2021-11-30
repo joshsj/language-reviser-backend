@@ -14,4 +14,6 @@ const _try = <T = void>(f: () => T, _catch?: (e: unknown) => any) => {
   return void 0;
 };
 
-export { _throw, _try };
+const random = (n: number) => Math.round(Math.random() * (n - 1));
+
+export { _throw, _try, random };

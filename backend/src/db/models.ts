@@ -15,7 +15,7 @@ type ActiveChallenges = ReturnModelType<
   BeAnObject
 >;
 
-type Models = { Words: Words; ActiveChallenges: ActiveChallenges };
+type Models = { words: Words; activeChallenges: ActiveChallenges };
 
 const createModels = (): Models => {
   const WordModel: Words = getModelForClass(WordSchema);
@@ -26,7 +26,7 @@ const createModels = (): Models => {
     ActiveChallengeSchema
   );
 
-  return { Words: WordModel, ActiveChallenges: ActiveChallengeModel };
+  return { words: WordModel, activeChallenges: ActiveChallengeModel };
 };
 
 export { createModels, Models, Words, ActiveChallenges };

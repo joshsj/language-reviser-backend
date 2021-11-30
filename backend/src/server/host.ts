@@ -33,8 +33,8 @@ const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
 
     // TODO: make safe
     handlers[clientMessage.name as ClientMessageName].forEach((handler) =>
-      handler(clientMessage).then((response) =>
-        sendResponse(client, log, response)
+      handler(clientMessage).then(
+        (response) => response && sendResponse(client, log, response)
       )
     );
   });

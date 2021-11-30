@@ -1,6 +1,7 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
 import { IModelOptions } from "@typegoose/typegoose/lib/types";
 import { ActiveChallenge } from "../types";
+import { Entity } from "./entity";
 
 const options: IModelOptions = {
   schemaOptions: {
@@ -9,7 +10,7 @@ const options: IModelOptions = {
 };
 
 @modelOptions(options)
-class ActiveChallengeSchema implements ActiveChallenge {
+class ActiveChallengeSchema extends Entity implements ActiveChallenge {
   @prop({ required: true })
   answer!: string;
 
