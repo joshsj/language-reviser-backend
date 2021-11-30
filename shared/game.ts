@@ -6,8 +6,15 @@ type Challenge = {
   post?: string;
 };
 
-type ChallengeCategory = "verb";
-
 type Attempt = { challengeId: string; attempt: string };
 
-export { Challenge, ChallengeCategory, Attempt };
+type VerbOptions = { regular: boolean; irregular: boolean };
+
+type NounOptions = {};
+
+type ChallengeOptions = {
+  verb?: VerbOptions;
+  noun?: NounOptions;
+};
+
+export { Challenge, Attempt, VerbOptions, NounOptions, ChallengeOptions };

@@ -28,6 +28,9 @@ class VerbSchema extends WordSchema<"verb"> implements Verb {
   @prop({ required })
   infinitive!: string;
 
+  @prop({ required })
+  regular!: boolean;
+
   @prop({ type: VerbFormsSchema })
   forms!: VerbForms;
 }

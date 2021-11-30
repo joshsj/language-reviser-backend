@@ -5,9 +5,12 @@ import {
   ServerMessageName,
 } from "@shared/message";
 import { Models, Words } from "../db/models";
-import { checkAttempt } from "./game";
+import { checkAttempt } from "../game";
 import { ActiveChallenge, Word } from "../db/types";
 import { toActiveChallenge, toChallenge } from "./mappers";
+import { ChallengeOptions } from "@shared/game";
+import * as filters from "../db/filters";
+import { _throw, _try } from "@shared/utilities";
 
 type Handler<T extends ClientMessageName> = (
   message: Extract<ClientMessage, { name: T }>
@@ -17,17 +20,29 @@ type Handler<T extends ClientMessageName> = (
     : void
 >;
 
-type Handlers = {
-  [K in ClientMessageName]: Handler<K>[];
-};
+type Handlers = { [K in ClientMessageName]: Handler<K>[] };
 
-const getRandomWord = async (words: Words): Promise<Word> =>
-  (await words.aggregate([{ $sample: { size: 1 } }]))[0];
+const getRandomWord = async (
+  words: Words,
+  options: ChallengeOptions
+): Promise<Word | undefined> =>
+  (
+    await words.aggregate([
+      { $match: filters.challengeOptions(options) },
+      { $sample: { size: 1 } },
+    ])
+  )[0];
 
 const createHandlers = ({ words, activeChallenges }: Models): Handlers => ({
   newChallenge: [
-    async () => {
-      const activeChallenge = toActiveChallenge(await getRandomWord(words));
+    async ({ body }) => {
+      const word = await getRandomWord(words, body);
+
+      if (!word) {
+        return;
+      }
+
+      const activeChallenge = toActiveChallenge(word);
       await activeChallenges.create(activeChallenge);
 
       return Promise.resolve({
@@ -40,9 +55,7 @@ const createHandlers = ({ words, activeChallenges }: Models): Handlers => ({
   attempt: [
     async ({ body: { challengeId, attempt } }) => {
       const activeChallenge: ActiveChallenge | null =
-        await activeChallenges.findOne({
-          _id: challengeId,
-        });
+        await activeChallenges.findOne({ _id: challengeId });
 
       // TODO: better error handling
       if (!activeChallenge) {
@@ -51,9 +64,7 @@ const createHandlers = ({ words, activeChallenges }: Models): Handlers => ({
 
       const result = checkAttempt(activeChallenge.answer, attempt);
 
-      if (result) {
-        await activeChallenges.deleteOne({ _id: challengeId });
-      }
+      result && (await activeChallenges.deleteOne({ _id: challengeId }));
 
       return Promise.resolve({ name: "attempt", body: { result } });
     },

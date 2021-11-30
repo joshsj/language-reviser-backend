@@ -1,9 +1,9 @@
-import { Challenge, Attempt } from "./game";
+import { Challenge, Attempt, ChallengeOptions } from "./game";
 
 type ClientMessage =
   | {
       name: "newChallenge";
-      body: undefined;
+      body: ChallengeOptions;
     }
   | { name: "attempt"; body: Attempt };
 

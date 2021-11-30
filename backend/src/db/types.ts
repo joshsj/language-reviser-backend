@@ -16,6 +16,7 @@ type VerbForms = { [K in Subject]: string };
 
 type Verb = BaseWord<"verb"> & {
   infinitive: string;
+  regular: boolean;
   forms: VerbForms;
 };
 

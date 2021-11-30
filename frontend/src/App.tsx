@@ -27,7 +27,7 @@ const App = defineComponent({
       for (let i = 0; i < n; ++i) {
         props.connection.send({
           name: "newChallenge",
-          body: undefined,
+          body: { verb: { regular: true, irregular: false } },
         });
       }
     };
