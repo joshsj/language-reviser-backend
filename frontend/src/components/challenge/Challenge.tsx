@@ -7,7 +7,7 @@ import {
   watch,
   nextTick,
 } from "vue";
-import { Challenge } from "@shared/game";
+import { Challenge as ChallengeData } from "@shared/game";
 import { accentHelper, emitT } from "../../utilities";
 
 type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
@@ -25,7 +25,7 @@ const Label = defineComponent({
   setup(props) {
     const style = computed(
       (): StyleValue => ({
-        [`margin-${props.marginSide}`]: "1rem",
+        [`margin-${props.marginSide}`]: "1ch",
       })
     );
 
@@ -37,11 +37,11 @@ const Label = defineComponent({
   },
 });
 
-const _Challenge = defineComponent({
+const Challenge = defineComponent({
   name: "Challenge",
   components: { Label },
   props: {
-    challenge: Object as PropType<Challenge>,
+    challenge: Object as PropType<ChallengeData>,
     state: String as PropType<State>,
     stateTransitionTime: Number,
   },
@@ -52,8 +52,8 @@ const _Challenge = defineComponent({
   setup(props, { emit }) {
     const mainStyle = computed(
       (): StyleValue => ({
-        fontSize: "3.5rem",
-        padding: "0.75rem",
+        fontSize: "1.75em",
+        padding: "0.25em",
         borderRadius: "0.2em",
         border: "0.075em solid transparent",
         transition: `border-color ease-in-out ${
@@ -135,4 +135,4 @@ const _Challenge = defineComponent({
   },
 });
 
-export { _Challenge as Challenge, State };
+export { Challenge, State };

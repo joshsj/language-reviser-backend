@@ -59,13 +59,17 @@ const ChallengePanel = defineComponent({
 
     return () => (
       <div>
-        <ChallengeUI
-          challenge={currentChallenge.value}
-          state={challengeState.value}
-          stateTransitionTime={stateTransitionTime}
-          onAttempt={handleAttempt}
-          onSkip={() => handleResult("skip")}
-        />
+        {currentChallenge.value ? (
+          <ChallengeUI
+            challenge={currentChallenge.value}
+            state={challengeState.value}
+            stateTransitionTime={stateTransitionTime}
+            onAttempt={handleAttempt}
+            onSkip={() => handleResult("skip")}
+          />
+        ) : (
+          "No words found 🤔"
+        )}
       </div>
     );
   },

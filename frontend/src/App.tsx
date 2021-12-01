@@ -29,7 +29,6 @@ const App = defineComponent({
             offset: "33%",
           }}
           onClick={() => (settingsShowing.value = !settingsShowing.value)}
-          style={{ fontSize: "1.5rem" }}
         />
 
         <div class="page content-center">
