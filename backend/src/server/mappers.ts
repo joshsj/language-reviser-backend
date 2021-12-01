@@ -8,12 +8,13 @@ type EverythingChallenge = Challenge & ActiveChallenge;
 
 const newId = () => new Types.ObjectId();
 
-const nounPre: { [K in NounType]: string } = {
-  masculineSingular: "le",
-  masculinePlural: "les (m)",
-  feminineSingular: "la",
-  femininePlural: "les (f)",
-};
+const nounInfo: { [K in NounType]: { pre: string; post: string | undefined } } =
+  {
+    masculineSingular: { pre: "le", post: undefined },
+    masculinePlural: { pre: "les", post: "(m)" },
+    feminineSingular: { pre: "la", post: undefined },
+    femininePlural: { pre: "les", post: "(f)" },
+  };
 
 type Converters = {
   [K in Word["type"]]: (
@@ -25,13 +26,15 @@ const converters: Converters = {
     const type = NounTypes[random(NounTypes.length)]!;
     const _id = newId();
     const answer = noun[type];
+    const { pre, post } = nounInfo[type];
 
     return {
       _id,
       answer,
       challengeId: _id.toString(),
       hint: noun.english,
-      pre: nounPre[type],
+      pre,
+      post,
       answerLength: answer.length + random(2),
       context: noun.context,
     };
