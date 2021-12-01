@@ -1,9 +1,9 @@
 import {
+  Word,
   NounOptions,
   VerbOptions,
   ChallengeOptions,
-} from "@/common/types/game";
-import { Word } from "./types";
+} from "@/common/entities";
 
 // TODO: this is nasty tbf
 

@@ -2,7 +2,7 @@ import {
   ClientMessage,
   ServerMessage,
   ServerMessageName,
-} from "@/common/types/message";
+} from "@/common/messages";
 
 type Server = {
   send: (message: ClientMessage) => Server;

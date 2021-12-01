@@ -1,6 +1,6 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
 import { IModelOptions } from "@typegoose/typegoose/lib/types";
-import { ActiveChallenge } from "../types";
+import { ActiveChallenge } from "../entities";
 import { Entity } from "./entity";
 
 const options: IModelOptions = {

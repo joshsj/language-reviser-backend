@@ -1,7 +1,7 @@
-import { ChallengeOptions } from "@/common/types/game";
+import { ChallengeOptions, Word } from "@/common/entities";
 import { MessageHandlers } from "../dependency";
 import { Models, Words } from "../database/models";
-import { Word, ActiveChallenge } from "../database/types";
+import { ActiveChallenge } from "../database/entities";
 import { checkAttempt } from "./game";
 import {
   toEverythingChallenge,

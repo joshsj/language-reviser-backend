@@ -1,6 +1,6 @@
 import { Gender } from "@/common/language/composition";
 import { prop } from "@typegoose/typegoose";
-import { Noun } from "../types";
+import { Noun } from "@/common/entities";
 import { WordSchema } from "./word";
 
 const required = true;

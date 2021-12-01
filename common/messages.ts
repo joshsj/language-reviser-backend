@@ -1,4 +1,4 @@
-import { Attempt, Challenge, ChallengeOptions } from "./game";
+import { Attempt, Challenge, ChallengeOptions } from "./entities";
 
 type ClientMessage =
   | {

@@ -1,4 +1,4 @@
-import { Challenge } from "@/common/types/game";
+import { Challenge } from "@/common/entities";
 import { computed, defineComponent, PropType, reactive, ref } from "vue";
 import { Server } from "../../dependency";
 import { Challenge as ChallengeUI, State } from "./Challenge";

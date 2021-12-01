@@ -3,7 +3,7 @@ import {
   ClientMessage,
   ServerMessageName,
   ServerMessage,
-} from "@/common/types/message";
+} from "@/common/messages";
 
 type MessageHandler<T extends ClientMessageName> = (
   message: Extract<ClientMessage, { name: T }>

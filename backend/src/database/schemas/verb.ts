@@ -1,5 +1,5 @@
 import { prop } from "@typegoose/typegoose";
-import { Verb, VerbForms } from "../types";
+import { Verb, VerbForms } from "@/common/entities";
 import { WordSchema } from "./word";
 
 const required = true;

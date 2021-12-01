@@ -2,18 +2,24 @@ import {
   getModelForClass,
   getDiscriminatorModelForClass,
 } from "@typegoose/typegoose";
-import { BeAnObject, ReturnModelType } from "@typegoose/typegoose/lib/types";
+import {
+  AnyParamConstructor,
+  BeAnObject,
+  ReturnModelType,
+} from "@typegoose/typegoose/lib/types";
 import { ActiveChallengeSchema } from "./schemas/active-challenge";
 
 import { NounSchema } from "./schemas/noun";
 import { VerbSchema } from "./schemas/verb";
 import { WordSchema } from "./schemas/word";
 
-type Words = ReturnModelType<typeof WordSchema, BeAnObject>;
-type ActiveChallenges = ReturnModelType<
-  typeof ActiveChallengeSchema,
+type SchemaType<T extends AnyParamConstructor<any>> = ReturnModelType<
+  T,
   BeAnObject
 >;
+
+type Words = SchemaType<typeof WordSchema>;
+type ActiveChallenges = SchemaType<typeof ActiveChallengeSchema>;
 
 type Models = { words: Words; activeChallenges: ActiveChallenges };
 

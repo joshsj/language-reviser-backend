@@ -7,7 +7,7 @@ import {
   watch,
   nextTick,
 } from "vue";
-import { Challenge as ChallengeData } from "@/common/types/game";
+import { Challenge as ChallengeData } from "@/common/entities";
 import { accentHelper } from "@/common/language/accents";
 import { emitT, EmptyCharacter } from "../../utilities";
 

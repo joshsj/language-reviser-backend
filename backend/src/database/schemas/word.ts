@@ -1,7 +1,7 @@
-import { BaseWord } from "../types";
 import { modelOptions, prop } from "@typegoose/typegoose";
 import { IModelOptions } from "@typegoose/typegoose/lib/types";
 import { Entity } from "./entity";
+import { BaseWord } from "@/common/entities";
 
 const required = true;
 

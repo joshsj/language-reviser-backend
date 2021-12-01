@@ -1,8 +1,8 @@
-import { Challenge } from "@/common/types/game";
+import { Challenge, Noun, Verb, Word } from "@/common/entities";
 import { NounType, NounTypes, Subjects } from "@/common/language/composition";
 import { random } from "@/common/utilities";
 import { Types } from "mongoose";
-import { ActiveChallenge, Noun, Verb, Word } from "../database/types";
+import { ActiveChallenge } from "../database/entities";
 
 type EverythingChallenge = Challenge & ActiveChallenge;
 
