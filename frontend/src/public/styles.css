@@ -15,14 +15,14 @@ body {
 
 body {
   font-family: "Fira Mono", monospace;
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: #333333;
   background-color: #fafafa;
 }
 
 @media screen and (max-width: 900px) {
   body {
-    font-size: 1.5rem;
+    font-size: 1.33rem;
   }
 }
 

@@ -7,7 +7,11 @@ import {
 import { Models, Words } from "../db/models";
 import { checkAttempt } from "../game";
 import { ActiveChallenge, Word } from "../db/types";
-import { toActiveChallenge, toChallenge } from "./mappers";
+import {
+  toActiveChallenge,
+  toChallenge,
+  toEverythingChallenge,
+} from "./mappers";
 import { ChallengeOptions } from "@shared/game";
 import * as filters from "../db/filters";
 import { _throw, _try } from "@shared/utilities";
@@ -42,12 +46,12 @@ const createHandlers = ({ words, activeChallenges }: Models): Handlers => ({
         return;
       }
 
-      const activeChallenge = toActiveChallenge(word);
-      await activeChallenges.create(activeChallenge);
+      const everything = toEverythingChallenge(word);
+      await activeChallenges.create(toActiveChallenge(everything));
 
       return Promise.resolve({
         name: "newChallenge",
-        body: toChallenge(activeChallenge),
+        body: toChallenge(everything),
       });
     },
   ],

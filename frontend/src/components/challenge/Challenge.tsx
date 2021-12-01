@@ -8,7 +8,7 @@ import {
   nextTick,
 } from "vue";
 import { Challenge as ChallengeData } from "@shared/game";
-import { accentHelper, emitT } from "../../utilities";
+import { accentHelper, emitT, EmptyCharacter } from "../../utilities";
 
 type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
 
@@ -41,7 +41,10 @@ const Challenge = defineComponent({
   name: "Challenge",
   components: { Label },
   props: {
-    challenge: Object as PropType<ChallengeData>,
+    challenge: {
+      type: Object as PropType<ChallengeData>,
+      required: true,
+    },
     state: String as PropType<State>,
     stateTransitionTime: Number,
   },
@@ -54,6 +57,7 @@ const Challenge = defineComponent({
       (): StyleValue => ({
         fontSize: "1.75em",
         padding: "0.25em",
+        marginBottom: "0.25em",
         borderRadius: "0.2em",
         border: "0.075em solid transparent",
         transition: `border-color ease-in-out ${
@@ -116,20 +120,28 @@ const Challenge = defineComponent({
       keyDownHandlers[ev.key]?.(ev as InputKeyboardEvent);
 
     return () => (
-      <div style={mainStyle.value}>
-        <Label text={props.challenge?.pre} for={inputId} marginSide="right" />
+      <div style={{ textAlign: "center" }}>
+        <div style={mainStyle.value}>
+          <Label text={props.challenge?.pre} for={inputId} marginSide="right" />
 
-        <input
-          v-model={inputValue.value}
-          id={inputId}
-          placeholder={props.challenge?.hint}
-          maxlength={inputWidth.value}
-          style={inputStyle.value}
-          onKeydown={handleKeydown}
-          spellcheck="false"
-        />
+          <input
+            v-model={inputValue.value}
+            id={inputId}
+            placeholder={props.challenge?.hint}
+            maxlength={inputWidth.value}
+            style={inputStyle.value}
+            onKeydown={handleKeydown}
+            spellcheck="false"
+          />
 
-        <Label text={props.challenge?.post} for={inputId} marginSide="left" />
+          <Label text={props.challenge?.post} for={inputId} marginSide="left" />
+        </div>
+
+        <div>
+          {props.challenge.context
+            ? `(${props.challenge.context})`
+            : EmptyCharacter}
+        </div>
       </div>
     );
   },

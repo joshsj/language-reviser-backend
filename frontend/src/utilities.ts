@@ -37,4 +37,6 @@ const accentHelper = ((): AccentHelper => {
   };
 })();
 
-export { emitT, AccentHelper, accentHelper };
+const EmptyCharacter = String.fromCharCode(0x200c); // zero-width non-joiner
+
+export { emitT, AccentHelper, accentHelper, EmptyCharacter };

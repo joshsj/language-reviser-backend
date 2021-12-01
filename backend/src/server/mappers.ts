@@ -4,6 +4,10 @@ import { random } from "@shared/utilities";
 import { Types } from "mongoose";
 import { Word, ActiveChallenge, Noun, Verb } from "../db/types";
 
+type EverythingChallenge = Challenge & ActiveChallenge;
+
+const newId = () => new Types.ObjectId();
+
 const nounPre: { [K in NounType]: string } = {
   masculineSingular: "le",
   masculinePlural: "les (m)",
@@ -12,50 +16,68 @@ const nounPre: { [K in NounType]: string } = {
 };
 
 type Converters = {
-  [K in Word["type"]]: (word: Extract<Word, { type: K }>) => ActiveChallenge;
+  [K in Word["type"]]: (
+    word: Extract<Word, { type: K }>
+  ) => EverythingChallenge;
 };
 const converters: Converters = {
-  noun: (noun: Noun): ActiveChallenge => {
+  noun: (noun: Noun): EverythingChallenge => {
     const type = NounTypes[random(NounTypes.length)]!;
+    const _id = newId();
+    const answer = noun[type];
 
     return {
-      _id: new Types.ObjectId(),
-      answer: noun[type],
+      _id,
+      answer,
+      challengeId: _id.toString(),
       hint: noun.english,
       pre: nounPre[type],
+      answerLength: answer.length + random(2),
+      context: noun.context,
     };
   },
 
-  verb: (verb: Verb): ActiveChallenge => {
+  verb: (verb: Verb): EverythingChallenge => {
     const subject = Subjects[random(Subjects.length)]!;
+    const _id = newId();
+    const answer = verb.forms[subject];
 
     return {
-      _id: new Types.ObjectId(),
-      answer: verb.forms[subject],
+      _id,
+      answer,
+      challengeId: _id.toString(),
       hint: verb.infinitive,
       pre: subject,
+      answerLength: answer.length + random(2),
+      context: verb.context,
     };
   },
 };
 
-const toActiveChallenge = (word: Word): ActiveChallenge =>
+const toEverythingChallenge = (word: Word): EverythingChallenge =>
   // I wish this worked how I want it to
   converters[word.type](word as any);
 
-const toChallenge = ({
+const toActiveChallenge = ({
   _id,
-  hint,
-  pre,
-  post,
   answer,
-}: ActiveChallenge): Challenge => ({
+}: EverythingChallenge): ActiveChallenge => ({ _id, answer });
+
+// Explicit to ensure properties like 'Answer' aren't exposed
+const toChallenge = ({
   hint,
   pre,
   post,
-  // TODO: work out a bette way to serialize these things
-  challengeId: _id.toString(),
-  // an exact length would provide information about the answer
-  answerLength: answer.length + 1 + random(2),
+  context,
+  challengeId,
+  answerLength,
+}: EverythingChallenge): Challenge => ({
+  hint,
+  pre,
+  post,
+  context,
+  challengeId,
+  answerLength,
 });
 
-export { toChallenge, toActiveChallenge };
+export { toEverythingChallenge, toActiveChallenge, toChallenge };

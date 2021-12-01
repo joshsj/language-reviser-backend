@@ -4,6 +4,7 @@ type Challenge = {
   hint?: string;
   pre?: string;
   post?: string;
+  context?: string;
 };
 
 type Attempt = { challengeId: string; attempt: string };

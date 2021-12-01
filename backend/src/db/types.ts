@@ -1,4 +1,3 @@
-import { Challenge } from "@shared/game";
 import { Subject, Gender, NounType } from "@shared/language";
 import { Base } from "@typegoose/typegoose/lib/defaultClasses";
 
@@ -22,7 +21,6 @@ type Verb = BaseWord<"verb"> & {
 
 type Word = Noun | Verb;
 
-type ActiveChallenge = Entity &
-  Pick<Challenge, "hint" | "pre" | "post"> & { answer: string };
+type ActiveChallenge = Entity & { answer: string };
 
 export { Word, Noun, Verb, VerbForms, Entity, ActiveChallenge, BaseWord };
