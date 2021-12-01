@@ -8,7 +8,7 @@ import {
   nextTick,
 } from "vue";
 import { Challenge } from "@shared/game";
-import { accentHelper, emitT } from "../utilities";
+import { accentHelper, emitT } from "../../utilities";
 
 type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
 
@@ -50,8 +50,9 @@ const _Challenge = defineComponent({
     skip: emitT(),
   },
   setup(props, { emit }) {
-    const style = computed(
+    const mainStyle = computed(
       (): StyleValue => ({
+        fontSize: "3.5rem",
         padding: "0.75rem",
         borderRadius: "0.2em",
         border: "0.075em solid transparent",
@@ -115,7 +116,7 @@ const _Challenge = defineComponent({
       keyDownHandlers[ev.key]?.(ev as InputKeyboardEvent);
 
     return () => (
-      <div class="challenge" style={style.value}>
+      <div style={mainStyle.value}>
         <Label text={props.challenge?.pre} for={inputId} marginSide="right" />
 
         <input
