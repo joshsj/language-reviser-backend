@@ -3,9 +3,7 @@ import { App } from "./App";
 import { createConnection } from "./server";
 
 const main = async () => {
-  const url = `ws://${import.meta.env.VITE_SERVER_URL}`;
-
-  const server = await createConnection(url);
+  const server = await createConnection(import.meta.env.VITE_SERVER_URL);
 
   createApp(App, { server }).mount("#app");
 };

@@ -1,5 +1,5 @@
 import { ServerMessageName } from "@/common/types/message";
-import { Connection, ReceiveHandler, ReceiveHandlers } from "../dependency";
+import { Server, ReceiveHandler, ReceiveHandlers } from "../dependency";
 
 const resolveHandlers = <T extends ServerMessageName>(
   handlers: ReceiveHandlers,
@@ -23,8 +23,8 @@ const handleMessage = ({ data }: MessageEvent, handlers: ReceiveHandlers) => {
 const _createConnection = (
   ws: WebSocket,
   handlers: ReceiveHandlers
-): Connection => {
-  const connection: Connection = {
+): Server => {
+  const connection: Server = {
     send: (message) => {
       ws.send(JSON.stringify(message));
       return connection;
@@ -39,13 +39,13 @@ const _createConnection = (
   return connection;
 };
 
-const createConnection = (url: string): Promise<Connection> => {
-  const socket = new WebSocket(url);
+const createConnection = (url: string): Promise<Server> => {
+  const socket = new WebSocket(`ws://${url}`);
   const handlers: ReceiveHandlers = {};
 
   socket.addEventListener("message", (m) => handleMessage(m, handlers));
 
-  const connection: Connection = _createConnection(socket, handlers);
+  const connection: Server = _createConnection(socket, handlers);
 
   return new Promise((resolve) =>
     socket.addEventListener("open", () => resolve(connection))
