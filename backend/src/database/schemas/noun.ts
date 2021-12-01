@@ -1,4 +1,4 @@
-import { Gender } from "@shared/language/composition";
+import { Gender } from "@/common/language/composition";
 import { prop } from "@typegoose/typegoose";
 import { Noun } from "../types";
 import { WordSchema } from "./word";

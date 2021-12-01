@@ -1,4 +1,4 @@
-import { ChallengeOptions } from "@shared/message";
+import { ChallengeOptions } from "@/common/types/game";
 import { MessageHandlers } from "../dependency";
 import { Models, Words } from "../database/models";
 import { Word, ActiveChallenge } from "../database/types";

@@ -1,4 +1,4 @@
-import { Logger } from "@shared/dependency";
+import { Logger } from "@/common/dependency";
 import { red, green } from "picocolors";
 
 const logColor = {

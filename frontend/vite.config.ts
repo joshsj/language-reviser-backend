@@ -9,13 +9,13 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      "@shared": path.resolve(__dirname, "../shared"),
+      "@/common": path.resolve(__dirname, "../common"),
     },
   },
 
   server: {
     fs: {
-      allow: [searchForWorkspaceRoot(process.cwd()), "../shared"],
+      allow: [searchForWorkspaceRoot(process.cwd()), "../common"],
     },
   },
 });

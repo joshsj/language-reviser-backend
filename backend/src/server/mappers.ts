@@ -1,6 +1,6 @@
-import { Challenge } from "@shared/message";
-import { NounType, NounTypes, Subjects } from "@shared/language/composition";
-import { random } from "@shared/utilities";
+import { Challenge } from "@/common/types/game";
+import { NounType, NounTypes, Subjects } from "@/common/language/composition";
+import { random } from "@/common/utilities";
 import { Types } from "mongoose";
 import { ActiveChallenge, Noun, Verb, Word } from "../database/types";
 

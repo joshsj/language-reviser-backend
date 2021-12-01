@@ -1,4 +1,4 @@
-import { Subject, Gender, NounType } from "@shared/language/composition";
+import { Subject, Gender, NounType } from "@/common/language/composition";
 import { Base } from "@typegoose/typegoose/lib/defaultClasses";
 
 type Entity = Pick<Base, "_id">;

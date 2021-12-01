@@ -4,16 +4,14 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "node",
-    "target": "ES6",
+    "target": "ESNext",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "build",
     "paths": {
-      // TODO: work out why this isn't working
-      // "@/*": ["./src/*"],
-      "@shared/*": ["../shared/*"]
+      "@/common/*": ["../common/*"]
     }
   }
 }

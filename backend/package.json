@@ -20,6 +20,6 @@
     "clean": "npx tsc --build --clean"
   },
   "_moduleAliases": {
-    "@shared": "build/shared"
+    "@/common": "build/common"
   }
 }

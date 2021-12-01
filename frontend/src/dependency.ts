@@ -2,7 +2,7 @@ import {
   ClientMessage,
   ServerMessage,
   ServerMessageName,
-} from "@shared/message";
+} from "@/common/types/message";
 
 type Connection = {
   send: (message: ClientMessage) => Connection;

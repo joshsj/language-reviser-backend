@@ -1,7 +1,7 @@
 import Socket from "ws";
-import { _throw, _try } from "@shared/utilities";
-import { Logger, LoggerMode } from "@shared/dependency";
-import { ClientMessageName, ServerMessage } from "@shared/message";
+import { _throw, _try } from "@/common/utilities";
+import { Logger, LoggerMode } from "@/common/dependency";
+import { ClientMessageName, ServerMessage } from "@/common/types/message";
 import { MessageHandlers } from "../dependency";
 
 const wrapLogger =

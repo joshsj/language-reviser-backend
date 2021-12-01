@@ -1,4 +1,4 @@
-import { ServerMessageName } from "@shared/message";
+import { ServerMessageName } from "@/common/types/message";
 import { Connection, ReceiveHandler, ReceiveHandlers } from "../dependency";
 
 const resolveHandlers = <T extends ServerMessageName>(
