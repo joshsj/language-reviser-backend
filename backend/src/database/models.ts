@@ -3,7 +3,7 @@ import {
   getDiscriminatorModelForClass,
 } from "@typegoose/typegoose";
 import { BeAnObject, ReturnModelType } from "@typegoose/typegoose/lib/types";
-import { ActiveChallengeSchema } from "./schemas/activeChallenge";
+import { ActiveChallengeSchema } from "./schemas/active-challenge";
 
 import { NounSchema } from "./schemas/noun";
 import { VerbSchema } from "./schemas/verb";
