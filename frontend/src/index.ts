@@ -2,10 +2,12 @@ import { createApp } from "vue";
 import { App } from "./App";
 import { createConnection } from "./server";
 
-// TODO: parse url from .env
+const main = async () => {
+  const url = `ws://${import.meta.env.VITE_SERVER_URL}`;
 
-const url = "ws://localhost:5500";
+  const server = await createConnection(url);
 
-createConnection(url).then((connection) =>
-  createApp(App, { connection }).mount("#app")
-);
+  createApp(App, { server }).mount("#app");
+};
+
+main();

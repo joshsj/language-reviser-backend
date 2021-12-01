@@ -1,6 +1,6 @@
 import { Challenge } from "@/common/types/game";
 import { computed, defineComponent, PropType, reactive, ref } from "vue";
-import { Connection } from "../../dependency";
+import { Server } from "../../dependency";
 import { Challenge as ChallengeUI, State } from "./Challenge";
 
 const InitialChallengeCount = 3;
@@ -8,8 +8,8 @@ const InitialChallengeCount = 3;
 const ChallengePanel = defineComponent({
   name: "ChallengePanel",
   props: {
-    connection: {
-      type: Object as PropType<Connection>,
+    server: {
+      type: Object as PropType<Server>,
       required: true,
     },
   },
@@ -25,7 +25,7 @@ const ChallengePanel = defineComponent({
 
     const getChallenge = (n: number = 1) => {
       for (let i = 0; i < n; ++i) {
-        props.connection.send({
+        props.server.send({
           name: "newChallenge",
           body: {},
         });
@@ -35,7 +35,7 @@ const ChallengePanel = defineComponent({
     const currentChallenge = computed(() => challenges[0]);
 
     const handleAttempt = (attempt: string) =>
-      props.connection.send({
+      props.server.send({
         name: "attempt",
         body: { challengeId: currentChallenge.value!.challengeId, attempt },
       });
@@ -49,7 +49,7 @@ const ChallengePanel = defineComponent({
       }
     };
 
-    props.connection
+    props.server
       .onReceive("newChallenge", ({ body }) => {
         body && challenges.push(body);
       })

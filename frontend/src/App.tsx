@@ -2,13 +2,13 @@ import { defineComponent, PropType, ref } from "vue";
 import { ChallengePanel } from "./components/challenge/ChallengePanel";
 import { Cornered } from "./components/general/Cornered";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
-import { Connection } from "./connection";
+import { Server } from "./dependency";
 
 const App = defineComponent({
   name: "App",
   props: {
-    connection: {
-      type: Object as PropType<Connection>,
+    server: {
+      type: Object as PropType<Server>,
       required: true,
     },
   },
@@ -33,7 +33,7 @@ const App = defineComponent({
 
         <div class="page content-center">
           {!settingsShowing.value ? (
-            <ChallengePanel connection={props.connection} />
+            <ChallengePanel server={props.server} />
           ) : (
             <SettingsPanel />
           )}

@@ -4,13 +4,13 @@ import {
   ServerMessageName,
 } from "@/common/types/message";
 
-type Connection = {
-  send: (message: ClientMessage) => Connection;
+type Server = {
+  send: (message: ClientMessage) => Server;
 
   onReceive: <T extends ServerMessageName>(
     name: T,
     callback: ReceiveHandler<T>
-  ) => Connection;
+  ) => Server;
 };
 
 type ReceiveHandler<T extends ServerMessageName> = (
@@ -19,4 +19,4 @@ type ReceiveHandler<T extends ServerMessageName> = (
 
 type ReceiveHandlers = { [K in ServerMessageName]?: ReceiveHandler<K>[] };
 
-export { Connection, ReceiveHandler, ReceiveHandlers };
+export { Server, ReceiveHandler, ReceiveHandlers };
