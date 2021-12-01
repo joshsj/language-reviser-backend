@@ -1,30 +1,14 @@
+import { ChallengeOptions } from "@shared/message";
+import { MessageHandlers } from "../dependency";
+import { Models, Words } from "../database/models";
+import { Word, ActiveChallenge } from "../database/types";
+import { checkAttempt } from "./game";
 import {
-  ClientMessage,
-  ClientMessageName,
-  ServerMessage,
-  ServerMessageName,
-} from "@shared/message";
-import { Models, Words } from "../db/models";
-import { checkAttempt } from "../game";
-import { ActiveChallenge, Word } from "../db/types";
-import {
+  toEverythingChallenge,
   toActiveChallenge,
   toChallenge,
-  toEverythingChallenge,
-} from "./mappers";
-import { ChallengeOptions } from "@shared/game";
-import * as filters from "../db/filters";
-import { _throw, _try } from "@shared/utilities";
-
-type Handler<T extends ClientMessageName> = (
-  message: Extract<ClientMessage, { name: T }>
-) => Promise<
-  T extends ServerMessageName
-    ? Extract<ServerMessage, { name: T }> | void
-    : void
->;
-
-type Handlers = { [K in ClientMessageName]: Handler<K>[] };
+} from "../server/mappers";
+import * as filters from "../database/filters";
 
 const getRandomWord = async (
   words: Words,
@@ -37,7 +21,10 @@ const getRandomWord = async (
     ])
   )[0];
 
-const createHandlers = ({ words, activeChallenges }: Models): Handlers => ({
+const createHandlers = ({
+  words,
+  activeChallenges,
+}: Models): MessageHandlers => ({
   newChallenge: [
     async ({ body }) => {
       const word = await getRandomWord(words, body);
@@ -75,4 +62,4 @@ const createHandlers = ({ words, activeChallenges }: Models): Handlers => ({
   ],
 });
 
-export { createHandlers, Handlers };
+export { createHandlers };

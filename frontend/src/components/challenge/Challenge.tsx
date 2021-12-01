@@ -7,8 +7,9 @@ import {
   watch,
   nextTick,
 } from "vue";
-import { Challenge as ChallengeData } from "@shared/game";
-import { accentHelper, emitT, EmptyCharacter } from "../../utilities";
+import { Challenge as ChallengeData } from "@shared/message";
+import { accentHelper } from "@shared/language/accents";
+import { emitT, EmptyCharacter } from "../../utilities";
 
 type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
 

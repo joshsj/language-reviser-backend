@@ -2,7 +2,7 @@ import Socket from "ws";
 import { _throw, _try } from "@shared/utilities";
 import { Logger, LoggerMode } from "@shared/dependency";
 import { ClientMessageName, ServerMessage } from "@shared/message";
-import { Handlers } from "./handlers";
+import { MessageHandlers } from "../dependency";
 
 const wrapLogger =
   (log: Logger, remoteAddress: string): Logger =>
@@ -22,7 +22,11 @@ const sendResponse = (client: Socket, log: Logger, response: ServerMessage) => {
   client.send(responseString);
 };
 
-const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
+const configureHandlers = (
+  client: Socket,
+  log: Logger,
+  handlers: MessageHandlers
+) => {
   client.on("message", (raw) => {
     _throw("Message was not sent as a Buffer", !(raw instanceof Buffer));
 
@@ -40,8 +44,12 @@ const configureHandlers = (client: Socket, log: Logger, handlers: Handlers) => {
   });
 };
 
-const createServer = () => ({
-  start: (port: number, handlers: Handlers, log?: Logger) => {
+const createServer = (
+  port: number,
+  handlers: MessageHandlers,
+  log?: Logger
+) => ({
+  start: () => {
     const server = new Socket.Server({ host: "localhost", port });
 
     server.on("connection", (socket, { socket: { remoteAddress } }) => {
@@ -53,4 +61,4 @@ const createServer = () => ({
   },
 });
 
-export { createServer, Handlers };
+export { createServer };

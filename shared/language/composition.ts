@@ -17,14 +17,6 @@ type NounType =
   // Intersect ensures correct implementation in array
   `${Gender}${Capitalize<Plurality>}` & typeof NounTypes[number];
 
-const Accents = {
-  a: ["à", "â"],
-  e: ["é", "ê", "è", "ë"],
-  i: ["î", "ï"],
-  o: ["ô"],
-  u: ["ù", "û", "ü"],
-} as const;
-
 export {
   Genders,
   Gender,
@@ -32,7 +24,6 @@ export {
   Plurality,
   Subjects,
   Subject,
-  Accents,
   NounTypes,
   NounType,
 };

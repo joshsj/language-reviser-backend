@@ -1,4 +1,4 @@
-import { ChallengeOptions, NounOptions, VerbOptions } from "@shared/game";
+import { NounOptions, VerbOptions, ChallengeOptions } from "@shared/message";
 import { Word } from "./types";
 
 // TODO: this is nasty tbf

@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { App } from "./App";
-import { createConnection } from "./connection";
+import { createConnection } from "./server";
 
 // TODO: parse url from .env
 

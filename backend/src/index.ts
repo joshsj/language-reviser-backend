@@ -1,20 +1,19 @@
-import * as server from "./server/host";
-import * as db from "./db/connection";
-import { getEnv, log } from "./utilities";
-import { createHandlers } from "./server/handlers";
+import { createModels } from "./database/models";
+import { createDatabase } from "./database";
+import { createServer } from "./server";
+import { createHandlers } from "./domain/handlers";
+import { getEnv } from "./env";
+import { log } from "./domain/logging";
 
 const main = async () => {
   const env = getEnv();
 
-  const { models } = await db.createConnection(
-    env.mongoDatabase,
-    env.mongoHost,
-    env.mongoPort
-  );
-
+  const models = createModels();
   const handlers = createHandlers(models);
 
-  server.createServer().start(env.socketPort, handlers, log);
+  await createDatabase(env.mongoDatabase, env.mongoHost, env.mongoPort);
+
+  createServer(env.socketPort, handlers, log).start();
 };
 
 main();

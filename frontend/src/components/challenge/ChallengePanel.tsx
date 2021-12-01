@@ -1,7 +1,7 @@
-import { Challenge } from "@shared/game";
+import { Challenge } from "@shared/message";
 import { computed, defineComponent, PropType, reactive, ref } from "vue";
+import { Connection } from "../../dependency";
 import { Challenge as ChallengeUI, State } from "./Challenge";
-import { Connection } from "../../connection";
 
 const InitialChallengeCount = 3;
 
