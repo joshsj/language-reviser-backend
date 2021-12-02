@@ -3,7 +3,7 @@ import { _throw, _try } from "@/common/utilities";
 import { Logger, LoggerMode } from "@/common/dependency";
 import { ClientMessageName, ServerMessage } from "@/common/messages";
 import { Dependencies } from "./dependency";
-import { Container, createContainer } from "./dependency/container";
+import { Container, createContainer } from "@/common/dependency/container";
 import { IncomingMessage } from "http";
 
 const configureContainer = (

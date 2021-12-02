@@ -1,4 +1,4 @@
-import { createContainer } from "./dependency/container";
+import { createContainer } from "@/common/dependency/container";
 import { Dependencies } from "./dependency";
 import { createModels } from "./data/models";
 import { createDatabase } from "./data";
