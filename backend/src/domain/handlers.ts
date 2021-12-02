@@ -1,14 +1,14 @@
 import { ChallengeOptions, Word } from "@/common/entities";
 import { MessageHandlers } from "../dependency";
-import { Models, Words } from "../database/models";
-import { ActiveChallenge } from "../database/entities";
+import { Models, Words } from "../data/models";
+import { ActiveChallenge } from "../data/entities";
 import { checkAttempt } from "./game";
 import {
   toEverythingChallenge,
   toActiveChallenge,
   toChallenge,
-} from "../server/mappers";
-import * as filters from "../database/filters";
+} from "../data/mappers";
+import * as filters from "../data/filters";
 
 const getRandomWord = async (
   words: Words,

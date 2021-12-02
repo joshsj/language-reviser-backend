@@ -1,9 +1,11 @@
+import { Logger } from "@/common/dependency";
 import {
   ClientMessageName,
   ClientMessage,
   ServerMessageName,
   ServerMessage,
 } from "@/common/messages";
+import { ActiveChallenges, Words } from "../data/models";
 
 type MessageHandler<T extends ClientMessageName> = (
   message: Extract<ClientMessage, { name: T }>
@@ -15,11 +17,12 @@ type MessageHandler<T extends ClientMessageName> = (
 
 type MessageHandlers = { [K in ClientMessageName]: MessageHandler<K>[] };
 
-type Env = {
-  socketPort: number;
-  mongoDatabase: string;
-  mongoHost: string;
-  mongoPort: number;
+type Dependencies = {
+  clientId?: string;
+  words?: Words;
+  activeChallenges?: ActiveChallenges;
+  messageHandlers?: MessageHandlers;
+  logger?: Logger;
 };
 
-export { MessageHandler, MessageHandlers, Env };
+export { MessageHandler, MessageHandlers, Dependencies };

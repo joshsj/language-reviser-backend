@@ -1,4 +1,9 @@
-import { Env } from "./dependency";
+type Env = {
+  socketPort: number;
+  mongoDatabase: string;
+  mongoHost: string;
+  mongoPort: number;
+};
 
 type EnvFile = { [K in keyof Env]: string };
 

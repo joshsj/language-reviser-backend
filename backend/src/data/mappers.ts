@@ -1,8 +1,8 @@
+import { Types } from "mongoose";
 import { Challenge, Noun, Verb, Word } from "@/common/entities";
 import { NounType, NounTypes, Subjects } from "@/common/language/composition";
 import { random } from "@/common/utilities";
-import { Types } from "mongoose";
-import { ActiveChallenge } from "../database/entities";
+import { ActiveChallenge } from "./entities";
 
 type EverythingChallenge = Challenge & ActiveChallenge;
 
@@ -23,7 +23,7 @@ type Converters = {
 };
 const converters: Converters = {
   noun: (noun: Noun): EverythingChallenge => {
-    const type = NounTypes[random(NounTypes.length)]!;
+    const type = NounTypes[random(NounTypes.length - 1)]!;
     const _id = newId();
     const answer = noun[type];
     const { pre, post } = nounInfo[type];
@@ -41,7 +41,7 @@ const converters: Converters = {
   },
 
   verb: (verb: Verb): EverythingChallenge => {
-    const subject = Subjects[random(Subjects.length)]!;
+    const subject = Subjects[random(Subjects.length - 1)]!;
     const _id = newId();
     const answer = verb.forms[subject];
 
