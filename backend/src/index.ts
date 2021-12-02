@@ -13,10 +13,11 @@ const main = async () => {
   const models = createModels();
 
   const container = createContainer<Dependencies>({});
+
   container
     .provide("words", models.words)
     .provide("activeChallenges", models.activeChallenges)
-    .provide("messageHandlers", createHandlers(models))
+    .provide("messageHandlers", createHandlers(container))
     .provide("logger", log);
 
   await createDatabase(env.mongoDatabase, env.mongoHost, env.mongoPort);

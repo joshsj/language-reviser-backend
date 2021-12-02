@@ -1,7 +1,6 @@
 import { ChallengeOptions, Word } from "@/common/entities";
-import { MessageHandlers } from "../dependency";
-import { Models, Words } from "../data/models";
-import { ActiveChallenge } from "../data/entities";
+import { Dependencies, MessageHandler, MessageHandlers } from "../dependency";
+import { Words } from "../data/models";
 import { checkAttempt } from "./game";
 import {
   toEverythingChallenge,
@@ -9,6 +8,7 @@ import {
   toChallenge,
 } from "../data/mappers";
 import * as filters from "../data/filters";
+import { Container } from "../dependency/container";
 
 const getRandomWord = async (
   words: Words,
@@ -21,45 +21,57 @@ const getRandomWord = async (
     ])
   )[0];
 
-const createHandlers = ({
-  words,
-  activeChallenges,
-}: Models): MessageHandlers => ({
-  newChallenge: [
-    async ({ body }) => {
-      const word = await getRandomWord(words, body);
+const handleNewChallenge =
+  (container: Container<Dependencies>): MessageHandler<"newChallenge"> =>
+  async ({ body }) => {
+    const words = container.resolve("words");
+    const activeChallenges = container.resolve("activeChallenges");
 
-      if (!word) {
-        return;
-      }
+    if (!(words && activeChallenges)) {
+      return;
+    }
 
-      const everything = toEverythingChallenge(word);
-      await activeChallenges.create(toActiveChallenge(everything));
+    const word = await getRandomWord(words, body);
 
-      return Promise.resolve({
-        name: "newChallenge",
-        body: toChallenge(everything),
-      });
-    },
-  ],
+    if (!word) {
+      return;
+    }
 
-  attempt: [
-    async ({ body: { challengeId, attempt } }) => {
-      const activeChallenge: ActiveChallenge | null =
-        await activeChallenges.findOne({ _id: challengeId });
+    const everything = toEverythingChallenge(word);
+    await activeChallenges.create(toActiveChallenge(everything));
 
-      // TODO: better error handling
-      if (!activeChallenge) {
-        return;
-      }
+    return Promise.resolve({
+      name: "newChallenge",
+      body: toChallenge(everything),
+    });
+  };
 
-      const result = checkAttempt(activeChallenge.answer, attempt);
+const handleAttempt =
+  (container: Container<Dependencies>): MessageHandler<"attempt"> =>
+  async ({ body: { challengeId, attempt } }) => {
+    const activeChallenges = container.resolve("activeChallenges");
 
-      result && (await activeChallenges.deleteOne({ _id: challengeId }));
+    const activeChallenge = await activeChallenges?.findOne({
+      _id: challengeId,
+    });
 
-      return Promise.resolve({ name: "attempt", body: { result } });
-    },
-  ],
+    // TODO: better error handling
+    if (!(activeChallenge && activeChallenges)) {
+      return;
+    }
+
+    const result = checkAttempt(activeChallenge.answer, attempt);
+
+    result && (await activeChallenges.deleteOne({ _id: challengeId }));
+
+    return Promise.resolve({ name: "attempt", body: { result } });
+  };
+
+const createHandlers = (
+  container: Container<Dependencies>
+): MessageHandlers => ({
+  newChallenge: [handleNewChallenge(container)],
+  attempt: [handleAttempt(container)],
 });
 
 export { createHandlers };
