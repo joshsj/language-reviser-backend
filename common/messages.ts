@@ -1,11 +1,12 @@
-import { Attempt, Challenge, ChallengeOptions } from "./entities";
+import { Attempt, Challenge, ChallengeOptions, Word } from "./entities";
 
 type ClientMessage =
   | {
       name: "newChallenge";
       message: ChallengeOptions;
     }
-  | { name: "attempt"; message: Attempt };
+  | { name: "attempt"; message: Attempt }
+  | { name: "createWord"; message: Word };
 
 type ServerMessage =
   | { name: "newChallenge"; message: Challenge }

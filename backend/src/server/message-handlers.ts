@@ -75,6 +75,7 @@ const createHandlers = (
 ): MessageHandlers => ({
   newChallenge: [handleNewChallenge(container)],
   attempt: [handleAttempt(container)],
+  createWord: [],
 });
 
 export { createHandlers };

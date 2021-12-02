@@ -6,6 +6,7 @@ const prompt = <TOption extends string = string>(
 ): Promise<TOption> => {
   _prompt.message = "";
   _prompt.delimiter = " ::";
+  _prompt.colors = false;
 
   const pattern = options.length ? new RegExp(options.join("|")) : undefined;
 
@@ -17,7 +18,7 @@ const prompt = <TOption extends string = string>(
             type: "string",
             required: true,
             description: options.length
-              ? `${question} (${[...options]})`
+              ? `${question} [${options.join(", ")}]`
               : question,
             pattern,
           },

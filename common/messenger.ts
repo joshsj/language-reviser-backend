@@ -1,6 +1,6 @@
 import { Logger, MessageHandler, Messenger } from "./dependency";
 import { Container } from "./dependency/container";
-import { ServerMessage, ServerMessageName } from "@/common/messages";
+import { ServerMessage, ServerMessageName } from "./messages";
 
 const configureLogging = (socket: WebSocket, logger: Logger | undefined) => {
   if (!logger) {
