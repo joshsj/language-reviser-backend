@@ -5,7 +5,7 @@ import {
   ServerMessageName,
   ServerMessage,
 } from "@/common/messages";
-import { ActiveChallenges, Words } from "../data/models";
+import { ActiveChallenges, Words } from "./data/models";
 
 type MessageHandler<T extends ClientMessageName> = (
   message: Extract<ClientMessage, { name: T }>

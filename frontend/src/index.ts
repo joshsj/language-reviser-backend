@@ -1,11 +1,20 @@
+import { createContainer } from "@/common/dependency/container";
 import { createApp } from "vue";
 import { App } from "./App";
-import { createConnection } from "./server";
+import { Dependencies } from "./dependency";
+import { createMessenger } from "../../common/messenger";
 
 const main = async () => {
-  const server = await createConnection(import.meta.env.VITE_SERVER_URL);
+  const container = createContainer<Dependencies>({});
 
-  createApp(App, { server }).mount("#app");
+  import.meta.env.DEV && container.provide("logger", (s) => console.log(s));
+
+  container.provide(
+    "messenger",
+    await createMessenger(import.meta.env.VITE_SERVER_URL, container)
+  );
+
+  createApp(App, { container }).mount("#app");
 };
 
 main();

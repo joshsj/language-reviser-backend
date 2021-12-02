@@ -2,7 +2,7 @@ import Socket from "ws";
 import { _throw, _try } from "@/common/utilities";
 import { Logger, LoggerMode } from "@/common/dependency";
 import { ClientMessageName, ServerMessage } from "@/common/messages";
-import { Dependencies } from "./dependency";
+import { Dependencies } from "../dependency";
 import { Container, createContainer } from "@/common/dependency/container";
 import { IncomingMessage } from "http";
 

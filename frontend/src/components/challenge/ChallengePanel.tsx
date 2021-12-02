@@ -1,19 +1,29 @@
+import { Container } from "@/common/dependency/container";
 import { Challenge } from "@/common/entities";
 import { computed, defineComponent, PropType, reactive, ref } from "vue";
-import { Server } from "../../dependency";
+import { Dependencies } from "../../dependency";
 import { Challenge as ChallengeUI, State } from "./Challenge";
 
 const InitialChallengeCount = 3;
 
 const ChallengePanel = defineComponent({
   name: "ChallengePanel",
+
   props: {
-    server: {
-      type: Object as PropType<Server>,
+    container: {
+      type: Object as PropType<Container<Dependencies>>,
       required: true,
     },
   },
+
   setup: (props) => {
+    const messenger = props.container.resolve("messenger");
+
+    // TODO: better handling
+    if (!messenger) {
+      return;
+    }
+
     const challenges = reactive<Challenge[]>([]);
     const stateTransitionTime = 250;
     const challengeState = ref<State | undefined>(undefined);
@@ -25,7 +35,7 @@ const ChallengePanel = defineComponent({
 
     const getChallenge = (n: number = 1) => {
       for (let i = 0; i < n; ++i) {
-        props.server.send({
+        messenger.publish({
           name: "newChallenge",
           body: {},
         });
@@ -35,7 +45,7 @@ const ChallengePanel = defineComponent({
     const currentChallenge = computed(() => challenges[0]);
 
     const handleAttempt = (attempt: string) =>
-      props.server.send({
+      messenger.publish({
         name: "attempt",
         body: { challengeId: currentChallenge.value!.challengeId, attempt },
       });
@@ -49,11 +59,9 @@ const ChallengePanel = defineComponent({
       }
     };
 
-    props.server
-      .onReceive("newChallenge", ({ body }) => {
-        body && challenges.push(body);
-      })
-      .onReceive("attempt", ({ body }) => handleResult(body.result));
+    messenger
+      .subscribe("newChallenge", ({ body }) => body && challenges.push(body))
+      .subscribe("attempt", ({ body }) => handleResult(body.result));
 
     getChallenge(InitialChallengeCount);
 

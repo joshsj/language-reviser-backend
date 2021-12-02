@@ -7,6 +7,6 @@ const logColor = {
   info: (s: string) => s,
 };
 
-const log: Logger = (s, mode = "info") => console.log(logColor[mode](s));
+const logger: Logger = (s, mode = "info") => console.log(logColor[mode](s));
 
-export { log };
+export { logger };

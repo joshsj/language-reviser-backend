@@ -1,28 +1,33 @@
+import { Container } from "@/common/dependency/container";
 import { defineComponent, PropType, ref } from "vue";
 import { ChallengePanel } from "./components/challenge/ChallengePanel";
 import { Cornered } from "./components/general/Cornered";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
-import { Server } from "./dependency";
+import { Dependencies } from "./dependency";
 
 const App = defineComponent({
   name: "App",
+
   props: {
-    server: {
-      type: Object as PropType<Server>,
+    container: {
+      type: Object as PropType<Container<Dependencies>>,
       required: true,
     },
   },
+
   setup: (props) => {
     const settingsShowing = ref(false);
+
+    const cornerIcon = (
+      <div style={{ cursor: "pointer" }}>
+        {settingsShowing.value ? "✏️" : "⚙️"}
+      </div>
+    );
 
     return () => (
       <div>
         <Cornered
-          content={
-            <div style={{ cursor: "pointer" }}>
-              {settingsShowing.value ? "✏️" : "⚙️"}
-            </div>
-          }
+          content={cornerIcon}
           cornerStyle={{
             corner: "topRight",
             relativeTo: "viewport",
@@ -33,7 +38,7 @@ const App = defineComponent({
 
         <div class="page content-center">
           {!settingsShowing.value ? (
-            <ChallengePanel server={props.server} />
+            <ChallengePanel container={props.container} />
           ) : (
             <SettingsPanel />
           )}
