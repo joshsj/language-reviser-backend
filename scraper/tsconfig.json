@@ -1,3 +1,10 @@
 {
-  "extends": "../tsconfig.target.json"
+  "extends": "../tsconfig.target.json",
+
+  "compilerOptions": {
+    "outDir": "build",
+    "paths": {
+      "@/common/*": ["../common/*"]
+    }
+  }
 }
