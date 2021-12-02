@@ -36,7 +36,10 @@ const handleNewChallenge =
       return;
     }
 
-    const everything = toEverythingChallenge(word);
+    const everything = toEverythingChallenge(
+      word,
+      container.resolve("clientId")
+    );
     await activeChallenges.create(toActiveChallenge(everything));
 
     return Promise.resolve({

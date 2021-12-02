@@ -12,18 +12,21 @@ type Container<T extends {}> = {
   resolve: Resolve<T>;
 };
 
+type ProviderProtocol = "singleProvide" | "multiProvide";
+
 const createContainer = <T extends {}>(
   dependencies: T,
-  parent?: Container<T>
+  providerProtocol: ProviderProtocol = "singleProvide"
 ): Container<T> => {
   const provide: Provide<T> = (name, obj) => {
-    !dependencies[name] && (dependencies[name] = obj);
+    if (providerProtocol === "multiProvide" || !dependencies[name]) {
+      dependencies[name] = obj;
+    }
 
     return container;
   };
 
-  const resolve: Resolve<T> = (name) =>
-    dependencies[name] ?? parent?.resolve(name);
+  const resolve: Resolve<T> = (name) => dependencies[name];
 
   const container: Container<T> = { provide, resolve };
 

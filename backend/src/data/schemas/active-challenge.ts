@@ -1,6 +1,6 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
 import { IModelOptions } from "@typegoose/typegoose/lib/types";
-import { ActiveChallenge } from "../entities";
+import { ActiveChallenge, ClientId } from "../entities";
 import { Entity } from "./entity";
 
 const options: IModelOptions = {
@@ -15,13 +15,7 @@ class ActiveChallengeSchema extends Entity implements ActiveChallenge {
   answer!: string;
 
   @prop({ type: String })
-  hint?: string;
-
-  @prop({ type: String })
-  pre?: string;
-
-  @prop({ type: String })
-  post?: string;
+  clientId: ClientId | undefined;
 }
 
 export { ActiveChallengeSchema };

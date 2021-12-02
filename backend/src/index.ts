@@ -10,7 +10,7 @@ import { createHandlers } from "./server/message-handlers";
 
 const main = async () => {
   const env = getEnv();
-  const container = createContainer<Dependencies>({});
+  const container = createContainer<Dependencies>({}, "multiProvide");
   const models = createModels();
 
   container

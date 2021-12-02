@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Challenge, Noun, Verb, Word } from "@/common/entities";
 import { NounType, NounTypes, Subjects } from "@/common/language/composition";
 import { random } from "@/common/utilities";
-import { ActiveChallenge } from "./entities";
+import { ActiveChallenge, ClientId } from "./entities";
 
 type EverythingChallenge = Challenge & ActiveChallenge;
 
@@ -18,11 +18,12 @@ const nounInfo: { [K in NounType]: { pre: string; post: string | undefined } } =
 
 type Converters = {
   [K in Word["type"]]: (
-    word: Extract<Word, { type: K }>
+    word: Extract<Word, { type: K }>,
+    clientId: ClientId | undefined
   ) => EverythingChallenge;
 };
 const converters: Converters = {
-  noun: (noun: Noun): EverythingChallenge => {
+  noun: (noun: Noun, clientId: ClientId | undefined): EverythingChallenge => {
     const type = NounTypes[random(NounTypes.length - 1)]!;
     const _id = newId();
     const answer = noun[type];
@@ -31,6 +32,7 @@ const converters: Converters = {
     return {
       _id,
       answer,
+      clientId,
       challengeId: _id.toString(),
       hint: noun.english,
       pre,
@@ -40,7 +42,7 @@ const converters: Converters = {
     };
   },
 
-  verb: (verb: Verb): EverythingChallenge => {
+  verb: (verb: Verb, clientId: ClientId | undefined): EverythingChallenge => {
     const subject = Subjects[random(Subjects.length - 1)]!;
     const _id = newId();
     const answer = verb.forms[subject];
@@ -48,6 +50,7 @@ const converters: Converters = {
     return {
       _id,
       answer,
+      clientId,
       challengeId: _id.toString(),
       hint: verb.infinitive,
       pre: subject,
@@ -57,14 +60,18 @@ const converters: Converters = {
   },
 };
 
-const toEverythingChallenge = (word: Word): EverythingChallenge =>
+const toEverythingChallenge = (
+  word: Word,
+  clientId: ClientId | undefined
+): EverythingChallenge =>
   // I wish this worked how I want it to
-  converters[word.type](word as any);
+  converters[word.type](word as any, clientId);
 
 const toActiveChallenge = ({
   _id,
   answer,
-}: EverythingChallenge): ActiveChallenge => ({ _id, answer });
+  clientId,
+}: EverythingChallenge): ActiveChallenge => ({ _id, answer, clientId });
 
 // Explicit to ensure properties like 'Answer' aren't exposed
 const toChallenge = ({
