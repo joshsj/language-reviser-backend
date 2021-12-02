@@ -8,7 +8,6 @@ import {
 } from "../data/mappers";
 import { Words } from "../data/models";
 import { Dependencies, MessageHandler, MessageHandlers } from "../dependency";
-import { checkAttempt } from "./game";
 
 const getRandomWord = async (
   words: Words,
@@ -50,17 +49,18 @@ const handleAttempt =
   (container: Container<Dependencies>): MessageHandler<"attempt"> =>
   async ({ body: { challengeId, attempt } }) => {
     const activeChallenges = container.resolve("activeChallenges");
+    const answerChecker = container.resolve("answerChecker");
 
     const activeChallenge = await activeChallenges?.findOne({
       _id: challengeId,
     });
 
     // TODO: better error handling
-    if (!(activeChallenge && activeChallenges)) {
+    if (!(activeChallenge && activeChallenges && answerChecker)) {
       return;
     }
 
-    const result = checkAttempt(activeChallenge.answer, attempt);
+    const result = answerChecker(activeChallenge.answer, attempt);
 
     result && (await activeChallenges.deleteOne({ _id: challengeId }));
 

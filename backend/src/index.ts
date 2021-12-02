@@ -1,4 +1,5 @@
 import { createContainer } from "@/common/dependency/container";
+import { answerChecker } from "@/common/game";
 import { Dependencies } from "./dependency";
 import { createModels } from "./data/models";
 import { createDatabase } from "./data";
@@ -14,6 +15,7 @@ const main = async () => {
 
   container
     .provide("logger", logger)
+    .provide("answerChecker", answerChecker)
     .provide("words", models.words)
     .provide("activeChallenges", models.activeChallenges)
     .provide("messageHandlers", createHandlers(container));

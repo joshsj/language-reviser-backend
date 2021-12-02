@@ -20,4 +20,13 @@ type Messenger = {
   ) => Messenger;
 };
 
-export { LoggerMode, Logger, AccentHelper, MessageHandler, Messenger };
+type AnswerChecker = (attempt: string, answer: string) => boolean;
+
+export {
+  LoggerMode,
+  Logger,
+  AccentHelper,
+  MessageHandler,
+  Messenger,
+  AnswerChecker,
+};
