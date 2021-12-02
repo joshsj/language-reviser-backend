@@ -22,7 +22,7 @@ const getRandomWord = async (
 
 const handleNewChallenge =
   (container: Container<Dependencies>): MessageHandler<"newChallenge"> =>
-  async ({ body }) => {
+  async ({ message }) => {
     const words = container.resolve("words");
     const activeChallenges = container.resolve("activeChallenges");
 
@@ -30,7 +30,7 @@ const handleNewChallenge =
       return;
     }
 
-    const word = await getRandomWord(words, body);
+    const word = await getRandomWord(words, message);
 
     if (!word) {
       return;
@@ -44,13 +44,13 @@ const handleNewChallenge =
 
     return Promise.resolve({
       name: "newChallenge",
-      body: toChallenge(everything),
+      message: toChallenge(everything),
     });
   };
 
 const handleAttempt =
   (container: Container<Dependencies>): MessageHandler<"attempt"> =>
-  async ({ body: { challengeId, attempt } }) => {
+  async ({ message: { challengeId, attempt } }) => {
     const activeChallenges = container.resolve("activeChallenges");
     const answerChecker = container.resolve("answerChecker");
 
@@ -67,7 +67,7 @@ const handleAttempt =
 
     result && (await activeChallenges.deleteOne({ _id: challengeId }));
 
-    return Promise.resolve({ name: "attempt", body: { result } });
+    return Promise.resolve({ name: "attempt", message: { result } });
   };
 
 const createHandlers = (

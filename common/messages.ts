@@ -3,13 +3,13 @@ import { Attempt, Challenge, ChallengeOptions } from "./entities";
 type ClientMessage =
   | {
       name: "newChallenge";
-      body: ChallengeOptions;
+      message: ChallengeOptions;
     }
-  | { name: "attempt"; body: Attempt };
+  | { name: "attempt"; message: Attempt };
 
 type ServerMessage =
-  | { name: "newChallenge"; body: Challenge }
-  | { name: "attempt"; body: { result: boolean } };
+  | { name: "newChallenge"; message: Challenge }
+  | { name: "attempt"; message: { result: boolean } };
 
 type ClientMessageName = ClientMessage["name"];
 type ServerMessageName = ServerMessage["name"];

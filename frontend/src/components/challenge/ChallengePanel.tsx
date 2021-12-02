@@ -37,7 +37,7 @@ const ChallengePanel = defineComponent({
       for (let i = 0; i < n; ++i) {
         messenger.publish({
           name: "newChallenge",
-          body: {},
+          message: {},
         });
       }
     };
@@ -47,7 +47,7 @@ const ChallengePanel = defineComponent({
     const handleAttempt = (attempt: string) =>
       messenger.publish({
         name: "attempt",
-        body: { challengeId: currentChallenge.value!.challengeId, attempt },
+        message: { challengeId: currentChallenge.value!.challengeId, attempt },
       });
 
     const handleResult = (correct: boolean | "skip") => {
@@ -60,8 +60,11 @@ const ChallengePanel = defineComponent({
     };
 
     messenger
-      .subscribe("newChallenge", ({ body }) => body && challenges.push(body))
-      .subscribe("attempt", ({ body }) => handleResult(body.result));
+      .subscribe(
+        "newChallenge",
+        ({ message }) => message && challenges.push(message)
+      )
+      .subscribe("attempt", ({ message }) => handleResult(message.result));
 
     getChallenge(InitialChallengeCount);
 
