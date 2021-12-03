@@ -1,5 +1,7 @@
 import { Container } from "@/common/dependency/container";
 import { ChallengeOptions, Word } from "@/common/entities";
+import { Types } from "mongoose";
+import { Entity } from "../data/entities";
 import * as filters from "../data/filters";
 import {
   toActiveChallenge,
@@ -70,12 +72,26 @@ const handleAttempt =
     return Promise.resolve({ name: "attempt", message: { result } });
   };
 
+const handleCreateWord =
+  (container: Container<Dependencies>): MessageHandler<"createWord"> =>
+  async ({ message: word }) => {
+    const words = container.resolve("words");
+
+    if (!words) {
+      return;
+    }
+
+    const entity: Entity<Word> = { ...word, _id: new Types.ObjectId() };
+
+    words.create(entity);
+  };
+
 const createHandlers = (
   container: Container<Dependencies>
 ): MessageHandlers => ({
   newChallenge: [handleNewChallenge(container)],
   attempt: [handleAttempt(container)],
-  createWord: [],
+  createWord: [handleCreateWord(container)],
 });
 
 export { createHandlers };
