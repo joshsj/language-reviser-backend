@@ -1,12 +1,10 @@
-import { Types } from "mongoose";
 import { Challenge, Noun, Verb, Word } from "@/common/entities";
 import { NounType, NounTypes, Subjects } from "@/common/language/composition";
 import { random } from "@/common/utilities";
 import { ActiveChallenge, ClientId } from "./entities";
+import { newId } from "./utilities";
 
 type EverythingChallenge = Challenge & ActiveChallenge;
-
-const newId = () => new Types.ObjectId();
 
 const nounInfo: { [K in NounType]: { pre: string; post: string | undefined } } =
   {

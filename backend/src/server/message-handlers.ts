@@ -9,6 +9,7 @@ import {
   toEverythingChallenge,
 } from "../data/mappers";
 import { Words } from "../data/models";
+import { newId } from "../data/utilities";
 import { Dependencies, MessageHandler, MessageHandlers } from "../dependency";
 
 const getRandomWord = async (
@@ -81,7 +82,7 @@ const handleCreateWord =
       return;
     }
 
-    const entity: Entity<Word> = { ...word, _id: new Types.ObjectId() };
+    const entity: Entity<Word> = { ...word, _id: newId() };
 
     words.create(entity);
   };
