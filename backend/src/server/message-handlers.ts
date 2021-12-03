@@ -1,6 +1,5 @@
 import { Container } from "@/common/dependency/container";
 import { ChallengeOptions, Word } from "@/common/entities";
-import { Types } from "mongoose";
 import { Entity } from "../data/entities";
 import * as filters from "../data/filters";
 import {
