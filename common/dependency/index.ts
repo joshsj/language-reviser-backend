@@ -3,8 +3,10 @@ import { ServerMessageName, ServerMessage, ClientMessage } from "../messages";
 type LoggerMode = "info" | "good" | "bad";
 type Logger = (s: string, mode?: LoggerMode) => void;
 
+type Direction = "next" | "previous";
+
 type AccentHelper = {
-  next: (char: string) => string;
+  get: (char: string, d: Direction) => string;
 };
 
 type MessageHandler<T extends ServerMessageName> = (
@@ -26,6 +28,7 @@ export {
   LoggerMode,
   Logger,
   AccentHelper,
+  Direction,
   MessageHandler,
   Messenger,
   AnswerChecker,

@@ -109,7 +109,7 @@ const Challenge = defineComponent({
 
         inputValue.value =
           inputValue.value.slice(0, letterIndex) +
-          accentHelper.next(letter) +
+          accentHelper.get(letter, ev.shiftKey ? "previous" : "next") +
           inputValue.value.slice(letterIndex + 1);
 
         nextTick(() => ev.target.setSelectionRange(start, end));
