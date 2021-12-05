@@ -24,7 +24,7 @@ const getRandomWord = async (
 
 const handleNewChallenge =
   (container: Container<Dependencies>): MessageHandler<"newChallenge"> =>
-  async ({ message }) => {
+  async ({ message }, { clientId }) => {
     const words = container.resolve("words");
     const activeChallenges = container.resolve("activeChallenges");
 
@@ -38,10 +38,7 @@ const handleNewChallenge =
       return;
     }
 
-    const everything = toEverythingChallenge(
-      word,
-      container.resolve("clientId")
-    );
+    const everything = toEverythingChallenge(word, clientId);
     await activeChallenges.create(toActiveChallenge(everything));
 
     return Promise.resolve({

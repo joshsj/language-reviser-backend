@@ -1,24 +1,21 @@
 import Socket from "ws";
 import { _throw, _try } from "@/common/utilities";
-import { Logger, LoggerMode } from "@/common/dependency";
+import { LoggerMode } from "@/common/dependency";
 import { ClientMessageName, ServerMessage } from "@/common/messages";
-import { Dependencies } from "../dependency";
+import { Dependencies, Session } from "../dependency";
 import { Container } from "@/common/dependency/container";
 import { IncomingMessage } from "http";
 
 const updateContainer = (
   container: Container<Dependencies>,
-  { headers, socket: { remoteAddress } }: IncomingMessage
+  { clientId }: Session,
+  { socket: { remoteAddress } }: IncomingMessage
 ) => {
-  container.provide("clientId", headers["sec-websocket-key"]);
-
   const logger = container.resolve("logger");
 
   if (!logger) {
     return;
   }
-
-  const clientId = container.resolve("clientId");
 
   container.provide(
     "logger",
@@ -32,7 +29,16 @@ const updateContainer = (
   );
 };
 
-const configureLogging = (socket: Socket, log: Logger | undefined) => {
+const createSession = ({ headers }: IncomingMessage): Session => ({
+  clientId: headers["sec-websocket-key"]!,
+});
+
+const configureLogging = (
+  socket: Socket,
+  container: Container<Dependencies>
+) => {
+  const log = container.resolve("logger");
+
   if (!log) {
     return;
   }
@@ -58,7 +64,8 @@ const sendResponse = (
 const onMessage = (
   socket: Socket,
   raw: Socket.Data,
-  container: Container<Dependencies>
+  container: Container<Dependencies>,
+  session: Session
 ) => {
   _throw("Message was not sent as a Buffer", !(raw instanceof Buffer));
 
@@ -72,13 +79,12 @@ const onMessage = (
   // TODO: make safe
   handlers &&
     handlers[clientMessage.name as ClientMessageName].forEach(async (h) =>
-      sendResponse(socket, container, await h(clientMessage))
+      sendResponse(socket, container, await h(clientMessage, session))
     );
 };
 
-const onClose = (container: Container<Dependencies>) => {
+const onClose = (container: Container<Dependencies>, { clientId }: Session) => {
   const activeChallenges = container.resolve("activeChallenges");
-  const clientId = container.resolve("clientId");
 
   if (!(activeChallenges && clientId)) {
     return;
@@ -98,13 +104,14 @@ const createServer = (port: number, container: Container<Dependencies>) => {
     const server = new Socket.Server({ host: "localhost", port });
 
     server.on("connection", (socket, req) => {
-      updateContainer(container, req);
+      const session = createSession(req);
 
-      configureLogging(socket, container.resolve("logger"));
+      updateContainer(container, session, req);
+      configureLogging(socket, container);
 
       socket
-        .on("message", (raw) => onMessage(socket, raw, container))
-        .on("close", () => onClose(container));
+        .on("message", (raw) => onMessage(socket, raw, container, session))
+        .on("close", () => onClose(container, session));
     });
   };
 
