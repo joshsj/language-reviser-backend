@@ -6,7 +6,7 @@ import { createDatabase } from "./data";
 import { createServer } from "./server";
 import { getEnv } from "./env";
 import { logger } from "./server/logging";
-import { createHandlers } from "./server/message-handlers";
+import { createHandlers } from "./logic/message-handlers";
 
 const main = async () => {
   const env = getEnv();

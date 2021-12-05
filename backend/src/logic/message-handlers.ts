@@ -2,14 +2,14 @@ import { Container } from "@/common/dependency/container";
 import { ChallengeOptions, Word } from "@/common/entities";
 import { Entity } from "../data/entities";
 import * as filters from "../data/filters";
-import {
-  toActiveChallenge,
-  toChallenge,
-  toEverythingChallenge,
-} from "../data/mappers";
 import { Words } from "../data/models";
 import { newId } from "../data/utilities";
 import { Dependencies, MessageHandler, MessageHandlers } from "../dependency";
+import {
+  toEverythingChallenge,
+  toActiveChallenge,
+  toChallenge,
+} from "./converters";
 
 const getRandomWord = async (
   words: Words,
@@ -24,7 +24,7 @@ const getRandomWord = async (
 
 const handleNewChallenge =
   (container: Container<Dependencies>): MessageHandler<"newChallenge"> =>
-  async ({ message }, { clientId }) => {
+  async ({ message }, session) => {
     const words = container.resolve("words");
     const activeChallenges = container.resolve("activeChallenges");
 
@@ -38,7 +38,7 @@ const handleNewChallenge =
       return;
     }
 
-    const everything = toEverythingChallenge(word, clientId);
+    const everything = toEverythingChallenge(word, session);
     await activeChallenges.create(toActiveChallenge(everything));
 
     return Promise.resolve({
