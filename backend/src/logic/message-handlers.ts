@@ -65,7 +65,7 @@ const handleAttempt =
     const status = answerChecker(activeChallenge.answer, attempt);
 
     status === "correct" &&
-      (await activeChallenges.deleteOne({ _id: challengeId }));
+      (await activeChallenges.findByIdAndDelete(challengeId));
 
     return Promise.resolve({ name: "attempt", message: { result: status } });
   };
@@ -86,9 +86,14 @@ const handleCreateWord =
 
 const handleSkip =
   (container: Container<Dependencies>): MessageHandler<"skip"> =>
-  ({ message: { challengeId } }) => {
-    container.resolve("activeChallenges")?.deleteOne({ _id: challengeId });
-    return Promise.resolve();
+  async ({ message: { challengeId } }) => {
+    const activeChallenge = await container
+      .resolve("activeChallenges")
+      ?.findByIdAndDelete(challengeId);
+
+    return activeChallenge
+      ? { name: "skip", message: { answer: activeChallenge.answer } }
+      : undefined;
   };
 
 const createHandlers = (

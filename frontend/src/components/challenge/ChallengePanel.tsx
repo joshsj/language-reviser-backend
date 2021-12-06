@@ -62,8 +62,6 @@ const ChallengePanel = defineComponent({
         skip: "red",
       };
 
-      console.log(blinkColor[answer]);
-
       blink(blinkColor[answer]);
 
       if (answer === "incorrect" || answer === "close") {
@@ -71,15 +69,11 @@ const ChallengePanel = defineComponent({
       }
 
       if (answer === "skip") {
-        console.log("skip");
-
         messenger.publish({
           name: "skip",
           message: { challengeId: currentChallenge.value!.challengeId },
         });
       }
-
-      console.log("next pls");
 
       challenges.shift();
       getChallenge();
@@ -87,7 +81,9 @@ const ChallengePanel = defineComponent({
 
     messenger
       .subscribe("newChallenge", ({ message }) => challenges.push(message))
-      .subscribe("attempt", ({ message }) => handleResult(message.result));
+      .subscribe("attempt", ({ message }) => handleResult(message.result))
+      // TODO: add UI for answer
+      .subscribe("skip", ({ message }) => alert(message.answer));
 
     getChallenge(InitialChallengeCount);
 

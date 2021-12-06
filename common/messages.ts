@@ -12,7 +12,8 @@ type ClientMessage =
 
 type ServerMessage =
   | { name: "newChallenge"; message: Challenge }
-  | { name: "attempt"; message: { result: AnswerStatus } };
+  | { name: "attempt"; message: { result: AnswerStatus } }
+  | { name: "skip"; message: { answer: string } };
 
 type ClientMessageName = ClientMessage["name"];
 type ServerMessageName = ServerMessage["name"];

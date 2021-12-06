@@ -29,6 +29,7 @@ const createMessenger = <T extends { logger?: Logger }>(
   const messageHandlers: MessageHandlers = {
     newChallenge: [],
     attempt: [],
+    skip: [],
   };
 
   const messenger: Messenger = {
