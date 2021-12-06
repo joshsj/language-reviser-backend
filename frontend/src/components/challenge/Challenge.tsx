@@ -23,7 +23,7 @@ const Label = defineComponent({
   setup(props) {
     const style = computed(
       (): StyleValue => ({
-        [`margin-${props.marginSide}`]: "1ch",
+        [`margin-${props.marginSide}`]: props.text ? "1ch" : undefined,
       })
     );
 
