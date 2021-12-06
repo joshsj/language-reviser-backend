@@ -28,16 +28,12 @@ const verbFilter = ({ regular, irregular }: VerbOptions): WordTypeFilter => {
 };
 
 const challengeOptions = ({ noun, verb }: ChallengeOptions) => {
-  if (!(verb || noun)) {
-    return {};
-  }
-
   const typeFilters: WordTypeFilter[] = [];
 
   noun && typeFilters.push(nounFilter(noun));
   verb && typeFilters.push(verbFilter(verb));
 
-  return { $or: typeFilters };
+  return typeFilters.length ? { $or: typeFilters } : {};
 };
 
 export { challengeOptions };

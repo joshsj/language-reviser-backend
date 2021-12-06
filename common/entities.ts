@@ -27,7 +27,8 @@ type Challenge = {
   context?: string;
 };
 
-type Attempt = { challengeId: string; attempt: string };
+type Skip = { challengeId: string };
+type Attempt = Skip & { attempt: string };
 
 type VerbOptions = { regular: boolean; irregular: boolean };
 type NounOptions = {};
@@ -46,6 +47,7 @@ export {
   Attempt,
   VerbOptions,
   NounOptions,
+  Skip,
   Challenge,
   ChallengeOptions,
 };

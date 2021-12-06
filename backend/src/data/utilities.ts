@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
+import { ClientId } from "./entities";
 
-const newId = () => new Types.ObjectId();
+const id = (id?: ClientId) => new Types.ObjectId(id);
 
-export { newId };
+export { id };

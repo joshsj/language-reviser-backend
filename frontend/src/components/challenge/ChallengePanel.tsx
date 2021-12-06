@@ -54,6 +54,12 @@ const ChallengePanel = defineComponent({
       blink(correct === true ? "good" : "bad");
 
       if (correct !== false) {
+        correct === "skip" &&
+          messenger.publish({
+            name: "skip",
+            message: { challengeId: currentChallenge.value!.challengeId },
+          });
+
         challenges.shift();
         getChallenge();
       }

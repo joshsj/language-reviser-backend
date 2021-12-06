@@ -1,12 +1,12 @@
 import { Subjects } from "@/common/language/composition";
 import { random } from "@/common/utilities";
 import { Converter } from ".";
-import { newId } from "../../data/utilities";
+import { id } from "../../data/utilities";
 
 const verbConverter: Converter<"verb"> = {
   inEnglish: (verb, { clientId }) => {
     const subject = Subjects[random(Subjects.length - 1)]!;
-    const _id = newId();
+    const _id = id();
     const answer = verb.forms[subject];
 
     return {
@@ -22,7 +22,7 @@ const verbConverter: Converter<"verb"> = {
   },
 
   inFrench: (verb, { clientId }) => {
-    const _id = newId();
+    const _id = id();
     const answer = verb.infinitive;
 
     return {

@@ -1,7 +1,7 @@
 import { NounType, NounTypes } from "@/common/language/composition";
 import { random } from "@/common/utilities";
 import { Converter } from ".";
-import { newId } from "../../data/utilities";
+import { id } from "../../data/utilities";
 
 const nounInfo: { [K in NounType]: { pre: string; post: string | undefined } } =
   {
@@ -14,7 +14,7 @@ const nounInfo: { [K in NounType]: { pre: string; post: string | undefined } } =
 const nounConverter: Converter<"noun"> = {
   inFrench: (noun, { clientId }) => {
     const type = NounTypes[random(NounTypes.length - 1)]!;
-    const _id = newId();
+    const _id = id();
     const answer = noun[type];
     const { pre, post } = nounInfo[type];
 
@@ -32,7 +32,7 @@ const nounConverter: Converter<"noun"> = {
   },
 
   inEnglish: (noun, { clientId }) => {
-    const _id = newId();
+    const _id = id();
     const answer = noun.english;
 
     return {

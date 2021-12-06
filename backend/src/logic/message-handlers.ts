@@ -3,7 +3,7 @@ import { ChallengeOptions, Word } from "@/common/entities";
 import { Entity } from "../data/entities";
 import * as filters from "../data/filters";
 import { Words } from "../data/models";
-import { newId } from "../data/utilities";
+import { id } from "../data/utilities";
 import { Dependencies, MessageHandler, MessageHandlers } from "../dependency";
 import {
   toEverythingChallenge,
@@ -78,9 +78,16 @@ const handleCreateWord =
       return;
     }
 
-    const entity: Entity<Word> = { ...word, _id: newId() };
+    const entity: Entity<Word> = { ...word, _id: id() };
 
     words.create(entity);
+  };
+
+const handleSkip =
+  (container: Container<Dependencies>): MessageHandler<"skip"> =>
+  ({ message: { challengeId } }) => {
+    container.resolve("activeChallenges")?.deleteOne({ _id: challengeId });
+    return Promise.resolve();
   };
 
 const createHandlers = (
@@ -89,6 +96,7 @@ const createHandlers = (
   newChallenge: [handleNewChallenge(container)],
   attempt: [handleAttempt(container)],
   createWord: [handleCreateWord(container)],
+  skip: [handleSkip(container)],
 });
 
 export { createHandlers };
