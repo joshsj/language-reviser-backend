@@ -22,7 +22,8 @@ type Messenger = {
   ) => Messenger;
 };
 
-type AnswerChecker = (attempt: string, answer: string) => boolean;
+type AnswerStatus = "correct" | "close" | "incorrect";
+type AnswerChecker = (attempt: string, answer: string) => AnswerStatus;
 
 export {
   LoggerMode,
@@ -32,4 +33,5 @@ export {
   MessageHandler,
   Messenger,
   AnswerChecker,
+  AnswerStatus,
 };

@@ -1,10 +1,12 @@
+import { AnswerStatus } from "@/common/dependency";
 import { Container } from "@/common/dependency/container";
 import { Challenge } from "@/common/entities";
 import { computed, defineComponent, PropType, reactive, ref } from "vue";
 import { Dependencies } from "../../dependency";
-import { Challenge as ChallengeUI, State } from "./Challenge";
+import { Challenge as ChallengeUI } from "./Challenge";
 
 const InitialChallengeCount = 3;
+type TrafficLight = "red" | "orange" | "green";
 
 const ChallengePanel = defineComponent({
   name: "ChallengePanel",
@@ -26,11 +28,11 @@ const ChallengePanel = defineComponent({
 
     const challenges = reactive<Challenge[]>([]);
     const stateTransitionTime = 250;
-    const challengeState = ref<State | undefined>(undefined);
+    const challengeColor = ref<TrafficLight | undefined>(undefined);
 
-    const blink = (state: State) => {
-      challengeState.value = state;
-      setTimeout(() => (challengeState.value = undefined), stateTransitionTime);
+    const blink = (color: TrafficLight) => {
+      challengeColor.value = color;
+      setTimeout(() => (challengeColor.value = undefined), stateTransitionTime);
     };
 
     const getChallenge = (n: number = 1) => {
@@ -50,26 +52,41 @@ const ChallengePanel = defineComponent({
         message: { challengeId: currentChallenge.value!.challengeId, attempt },
       });
 
-    const handleResult = (correct: boolean | "skip") => {
-      blink(correct === true ? "good" : "bad");
+    const handleResult = (answer: AnswerStatus | "skip") => {
+      console.log(answer);
 
-      if (correct !== false) {
-        correct === "skip" &&
-          messenger.publish({
-            name: "skip",
-            message: { challengeId: currentChallenge.value!.challengeId },
-          });
+      const blinkColor: { [K in typeof answer]: TrafficLight } = {
+        correct: "green",
+        close: "orange",
+        incorrect: "red",
+        skip: "red",
+      };
 
-        challenges.shift();
-        getChallenge();
+      console.log(blinkColor[answer]);
+
+      blink(blinkColor[answer]);
+
+      if (answer === "incorrect" || answer === "close") {
+        return;
       }
+
+      if (answer === "skip") {
+        console.log("skip");
+
+        messenger.publish({
+          name: "skip",
+          message: { challengeId: currentChallenge.value!.challengeId },
+        });
+      }
+
+      console.log("next pls");
+
+      challenges.shift();
+      getChallenge();
     };
 
     messenger
-      .subscribe(
-        "newChallenge",
-        ({ message }) => message && challenges.push(message)
-      )
+      .subscribe("newChallenge", ({ message }) => challenges.push(message))
       .subscribe("attempt", ({ message }) => handleResult(message.result));
 
     getChallenge(InitialChallengeCount);
@@ -79,7 +96,7 @@ const ChallengePanel = defineComponent({
         {currentChallenge.value ? (
           <ChallengeUI
             challenge={currentChallenge.value}
-            state={challengeState.value}
+            stateColor={challengeColor.value}
             stateTransitionTime={stateTransitionTime}
             onAttempt={handleAttempt}
             onSkip={() => handleResult("skip")}

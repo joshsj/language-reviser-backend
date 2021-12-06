@@ -1,3 +1,4 @@
+import { AnswerStatus } from "./dependency";
 import { Attempt, Challenge, ChallengeOptions, Skip, Word } from "./entities";
 
 type ClientMessage =
@@ -11,7 +12,7 @@ type ClientMessage =
 
 type ServerMessage =
   | { name: "newChallenge"; message: Challenge }
-  | { name: "attempt"; message: { result: boolean } };
+  | { name: "attempt"; message: { result: AnswerStatus } };
 
 type ClientMessageName = ClientMessage["name"];
 type ServerMessageName = ServerMessage["name"];

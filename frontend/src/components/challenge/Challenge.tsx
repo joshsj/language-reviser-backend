@@ -13,9 +13,6 @@ import { emitT, EmptyCharacter } from "../../utilities";
 
 type InputKeyboardEvent = KeyboardEvent & { target: HTMLInputElement };
 
-type State = "good" | "bad";
-const stateColor = { good: "mediumseagreen", bad: "tomato" };
-
 const Label = defineComponent({
   name: "Label",
   props: {
@@ -46,7 +43,7 @@ const Challenge = defineComponent({
       type: Object as PropType<ChallengeData>,
       required: true,
     },
-    state: String as PropType<State>,
+    stateColor: String,
     stateTransitionTime: Number,
   },
   emits: {
@@ -64,7 +61,7 @@ const Challenge = defineComponent({
         transition: `border-color ease-in-out ${
           (props?.stateTransitionTime ?? 0) / 1000
         }s`,
-        borderColor: props.state ? stateColor[props.state] : undefined + "ch",
+        borderColor: props.stateColor ?? "transparent",
       })
     );
 
@@ -148,4 +145,4 @@ const Challenge = defineComponent({
   },
 });
 
-export { Challenge, State };
+export { Challenge };

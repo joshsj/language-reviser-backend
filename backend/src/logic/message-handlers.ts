@@ -62,11 +62,12 @@ const handleAttempt =
       return;
     }
 
-    const result = answerChecker(activeChallenge.answer, attempt);
+    const status = answerChecker(activeChallenge.answer, attempt);
 
-    result && (await activeChallenges.deleteOne({ _id: challengeId }));
+    status === "correct" &&
+      (await activeChallenges.deleteOne({ _id: challengeId }));
 
-    return Promise.resolve({ name: "attempt", message: { result } });
+    return Promise.resolve({ name: "attempt", message: { result: status } });
   };
 
 const handleCreateWord =
