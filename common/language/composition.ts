@@ -7,15 +7,15 @@ type Plurality = typeof Pluralities[number];
 const Subjects = ["je", "tu", "il", "nous", "vous", "ils"] as const;
 type Subject = typeof Subjects[number];
 
-const NounTypes = Object.freeze([
+const AdjectiveTypes = Object.freeze([
   "masculineSingular",
   "masculinePlural",
   "feminineSingular",
   "femininePlural",
 ] as const);
-type NounType =
+type AdjectiveType =
   // Intersect ensures correct implementation in array
-  `${Gender}${Capitalize<Plurality>}` & typeof NounTypes[number];
+  `${Gender}${Capitalize<Plurality>}` & typeof AdjectiveTypes[number];
 
 export {
   Genders,
@@ -24,6 +24,6 @@ export {
   Plurality,
   Subjects,
   Subject,
-  NounTypes,
-  NounType,
+  AdjectiveTypes,
+  AdjectiveType,
 };

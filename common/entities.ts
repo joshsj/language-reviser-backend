@@ -1,4 +1,4 @@
-import { Gender, NounType, Subject } from "./language/composition";
+import { AdjectiveType, Subject } from "./language/composition";
 
 const WordCategories = ["people"] as const;
 type WordCategory = typeof WordCategories[number];
@@ -10,7 +10,9 @@ type BaseWord<TType extends string> = {
   categories: WordCategory[];
 };
 
-type Noun = BaseWord<"noun"> & { gender: Gender } & { [K in NounType]: string };
+type Adjective = BaseWord<"adjective"> & {
+  [K in AdjectiveType]: string;
+};
 
 type VerbForms = { [K in Subject]: string };
 
@@ -20,7 +22,7 @@ type Verb = BaseWord<"verb"> & {
   forms: VerbForms;
 };
 
-type Word = Noun | Verb;
+type Word = Adjective | Verb;
 
 type Challenge = {
   challengeId: string;
@@ -35,11 +37,11 @@ type Skip = { challengeId: string };
 type Attempt = Skip & { attempt: string };
 
 type VerbOptions = { regular: boolean; irregular: boolean };
-type NounOptions = {};
+type AdjectiveOptions = {};
 
 type ChallengeOptions = {
   verb?: VerbOptions;
-  noun?: NounOptions;
+  adjective?: AdjectiveOptions;
 };
 
 export {
@@ -49,10 +51,11 @@ export {
   Word,
   VerbForms,
   Verb,
-  Noun,
+  Adjective,
+  AdjectiveType,
   Attempt,
   VerbOptions,
-  NounOptions,
+  AdjectiveOptions,
   Skip,
   Challenge,
   ChallengeOptions,

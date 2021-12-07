@@ -32,6 +32,17 @@ const migrate = async (container: Container<Dependencies>) => {
       { $set: { [field]: [] } }
     );
   }
+
+  {
+    log(2, "change noun type to adjective");
+
+    const field = "type";
+
+    await words.updateMany(
+      { [field]: "noun" },
+      { $set: { [field]: "adjective" } }
+    );
+  }
 };
 
 export { migrate };

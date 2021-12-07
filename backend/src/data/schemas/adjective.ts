@@ -1,14 +1,10 @@
-import { Gender } from "@/common/language/composition";
 import { prop } from "@typegoose/typegoose";
-import { Noun } from "@/common/entities";
+import { Adjective } from "@/common/entities";
 import { WordSchema } from "./word";
 
 const required = true;
 
-class NounSchema extends WordSchema<"noun"> implements Noun {
-  @prop({ required })
-  gender!: Gender;
-
+class AdjectiveSchema extends WordSchema<"adjective"> implements Adjective {
   @prop({ required })
   masculineSingular!: string;
 
@@ -22,4 +18,4 @@ class NounSchema extends WordSchema<"noun"> implements Noun {
   femininePlural!: string;
 }
 
-export { NounSchema };
+export { AdjectiveSchema };

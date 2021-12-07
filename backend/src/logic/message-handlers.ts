@@ -82,6 +82,8 @@ const handleCreateWord =
     const entity: Entity<Word> = { ...word, _id: id() };
 
     words.create(entity);
+
+    const hmm = (await words.findById("test"))!;
   };
 
 const handleSkip =

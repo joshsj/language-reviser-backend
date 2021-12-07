@@ -9,7 +9,7 @@ import {
 } from "@typegoose/typegoose/lib/types";
 import { ActiveChallengeSchema } from "./schemas/active-challenge";
 
-import { NounSchema } from "./schemas/noun";
+import { AdjectiveSchema } from "./schemas/adjective";
 import { VerbSchema } from "./schemas/verb";
 import { WordSchema } from "./schemas/word";
 
@@ -25,7 +25,7 @@ type Models = { words: Words; activeChallenges: ActiveChallenges };
 
 const createModels = (): Models => {
   const WordModel: Words = getModelForClass(WordSchema);
-  getDiscriminatorModelForClass(WordModel, NounSchema, "noun");
+  getDiscriminatorModelForClass(WordModel, AdjectiveSchema, "adjective");
   getDiscriminatorModelForClass(WordModel, VerbSchema, "verb");
 
   const ActiveChallengeModel: ActiveChallenges = getModelForClass(

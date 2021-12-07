@@ -1,6 +1,6 @@
 import {
   Word,
-  NounOptions,
+  AdjectiveOptions,
   VerbOptions,
   ChallengeOptions,
 } from "@/common/entities";
@@ -13,8 +13,8 @@ const toWordTypeFilter = <T extends Word>(
 ) => ({ type, ...options });
 type WordTypeFilter = ReturnType<typeof toWordTypeFilter>;
 
-const nounFilter = ({}: NounOptions): WordTypeFilter =>
-  toWordTypeFilter("noun");
+const adjectiveFilter = ({}: AdjectiveOptions): WordTypeFilter =>
+  toWordTypeFilter("adjective");
 
 const verbFilter = ({ regular, irregular }: VerbOptions): WordTypeFilter => {
   const regulars = [];
@@ -27,10 +27,10 @@ const verbFilter = ({ regular, irregular }: VerbOptions): WordTypeFilter => {
   });
 };
 
-const challengeOptions = ({ noun, verb }: ChallengeOptions) => {
+const challengeOptions = ({ adjective, verb }: ChallengeOptions) => {
   const typeFilters: WordTypeFilter[] = [];
 
-  noun && typeFilters.push(nounFilter(noun));
+  adjective && typeFilters.push(adjectiveFilter(adjective));
   verb && typeFilters.push(verbFilter(verb));
 
   return typeFilters.length ? { $or: typeFilters } : {};
