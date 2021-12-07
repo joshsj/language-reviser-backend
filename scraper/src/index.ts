@@ -3,14 +3,15 @@ import { prompt, yesNo } from "./menu";
 import { Word } from "@/common/entities";
 import { scrapeVerb } from "./scrapers/verb";
 import { ClientMessage } from "@/common/messages";
+import { scrapeAdjective } from "./scrapers/adjective";
 
 type Env = { serverUrl: string };
-type Scrapers = { verb: typeof scrapeVerb };
+type Scrapers = { verb: typeof scrapeVerb; adjective: typeof scrapeAdjective };
 
 const QuitOption = "quit";
 type QuitOption = typeof QuitOption;
 
-type WordOption = Extract<Word["type"], "verb">;
+type WordOption = Extract<Word["type"], "verb" | "adjective">;
 
 const loop = async (
   socket: WebSocket,
@@ -19,7 +20,7 @@ const loop = async (
   const wordOption = await prompt<WordOption | QuitOption>(
     "word option",
     "required",
-    ["verb", QuitOption]
+    ["verb", "adjective", QuitOption]
   );
 
   if (!wordOption || wordOption === QuitOption) {
@@ -32,7 +33,9 @@ const loop = async (
     const scraper = scrapers[wordOption];
 
     const info = await scraper.menu();
-    word = await scraper.retrieve(info);
+
+    // i really wish this worked without an assertion
+    word = await scraper.retrieve(info as any);
   } catch {
     console.log("an error occurred while retrieving word data");
   }
@@ -44,7 +47,7 @@ const loop = async (
   console.log(word);
 
   if ((await yesNo()) === "y") {
-    console.log(`sending word ${word.infinitive}`);
+    console.log(`sending word ${word.english}`);
 
     const message: Extract<ClientMessage, { name: "createWord" }> = {
       name: "createWord",
@@ -79,7 +82,7 @@ const main = async () => {
   const { serverUrl } = process.env as Env;
 
   const socket = await createSocket(serverUrl);
-  const scrapers: Scrapers = { verb: scrapeVerb };
+  const scrapers: Scrapers = { verb: scrapeVerb, adjective: scrapeAdjective };
 
   let resume = true;
 

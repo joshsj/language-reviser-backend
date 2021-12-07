@@ -3,13 +3,13 @@ import { random } from "@/common/utilities";
 import { Converter } from ".";
 import { id } from "../../data/utilities";
 
-const adjectiveInfo: {
-  [K in AdjectiveType]: { pre: string; post: string | undefined };
+const adjectivePre: {
+  [K in AdjectiveType]: string;
 } = {
-  masculineSingular: { pre: "le", post: undefined },
-  masculinePlural: { pre: "les", post: "(m)" },
-  feminineSingular: { pre: "la", post: undefined },
-  femininePlural: { pre: "les", post: "(f)" },
+  masculineSingular: "ms",
+  masculinePlural: "mp",
+  feminineSingular: "fs",
+  femininePlural: "fp",
 };
 
 const adjectiveConverter: Converter<"adjective"> = {
@@ -17,14 +17,13 @@ const adjectiveConverter: Converter<"adjective"> = {
     const type = AdjectiveTypes[random(AdjectiveTypes.length - 1)]!;
     const _id = id();
     const answer = adjective[type];
-    const { pre, post } = adjectiveInfo[type];
+    const pre = adjectivePre[type];
 
     return {
       _id,
       clientId,
       answer,
       pre,
-      post,
       hint: adjective.english,
       context: adjective.context,
       challengeId: _id.toString(),
