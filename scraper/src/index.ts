@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { prompt } from "./menu";
+import { prompt, yesNo } from "./menu";
 import { Word } from "@/common/entities";
 import { scrapeVerb } from "./scrapers/verb";
 import { ClientMessage } from "@/common/messages";
@@ -16,10 +16,11 @@ const loop = async (
   socket: WebSocket,
   scrapers: Scrapers
 ): Promise<boolean> => {
-  const wordOption = await prompt<WordOption | QuitOption>("word option", [
-    "verb",
-    QuitOption,
-  ]);
+  const wordOption = await prompt<WordOption | QuitOption>(
+    "word option",
+    "required",
+    ["verb", QuitOption]
+  );
 
   if (!wordOption || wordOption === QuitOption) {
     return false;
@@ -42,7 +43,7 @@ const loop = async (
 
   console.log(word);
 
-  if ((await prompt("okay?", ["y", "n"])) === "y") {
+  if ((await yesNo()) === "y") {
     console.log(`sending word ${word.infinitive}`);
 
     const message: Extract<ClientMessage, { name: "createWord" }> = {

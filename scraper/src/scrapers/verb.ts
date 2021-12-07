@@ -1,7 +1,7 @@
 import { Verb, WordCategories, WordCategory } from "@/common/entities";
 import { JSDOM } from "jsdom";
 import { Scraper } from ".";
-import { prompt } from "../menu";
+import { prompt, yesNo } from "../menu";
 
 const TextKey = "textContent";
 type Conjugations = [string, string, string, string, string, string];
@@ -24,7 +24,11 @@ const getVerbData = (
 };
 
 const getCategories = async (): Promise<WordCategory[]> => {
-  const loop = () => prompt("category", [...WordCategories, "done"]);
+  const loop = () =>
+    prompt<WordCategory | "done">("category", "required", [
+      ...WordCategories,
+      "done",
+    ]);
 
   const categories: WordCategory[] = [];
 
@@ -44,10 +48,10 @@ const getCategories = async (): Promise<WordCategory[]> => {
 const scrapeVerb: Scraper<Verb, VerbInfo> = {
   menu: async () => {
     const info = {
-      infinitive: await prompt("infinitive"),
-      english: await prompt("english"),
-      context: await prompt("context"),
-      regular: await prompt("regular", ["y", "n"]),
+      infinitive: await prompt("infinitive", "required"),
+      english: await prompt("english", "required"),
+      context: await prompt("context", "optional"),
+      regular: await yesNo("regular"),
       categories: await getCategories(),
     };
 
