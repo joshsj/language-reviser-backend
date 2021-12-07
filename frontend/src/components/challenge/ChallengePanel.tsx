@@ -53,8 +53,6 @@ const ChallengePanel = defineComponent({
       });
 
     const handleResult = (answer: AnswerStatus | "skip") => {
-      console.log(answer);
-
       const blinkColor: { [K in typeof answer]: TrafficLight } = {
         correct: "green",
         close: "orange",
