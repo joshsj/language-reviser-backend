@@ -1,9 +1,13 @@
 import { Gender, NounType, Subject } from "./language/composition";
 
+const WordCategories = ["people"] as const;
+type WordCategory = typeof WordCategories[number];
+
 type BaseWord<TType extends string> = {
   type: TType;
   english: string;
   context?: string;
+  categories: WordCategory[];
 };
 
 type Noun = BaseWord<"noun"> & { gender: Gender } & { [K in NounType]: string };
@@ -39,6 +43,8 @@ type ChallengeOptions = {
 };
 
 export {
+  WordCategory,
+  WordCategories,
   BaseWord,
   Word,
   VerbForms,

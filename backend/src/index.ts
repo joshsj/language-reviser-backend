@@ -1,12 +1,13 @@
 import { createContainer } from "@/common/dependency/container";
 import { answerChecker } from "@/common/game";
-import { Dependencies } from "./dependency";
-import { createModels } from "./data/models";
 import { createDatabase } from "./data";
-import { createServer } from "./server";
+import { migrate } from "./data/migrations";
+import { createModels } from "./data/models";
+import { Dependencies } from "./dependency";
 import { getEnv } from "./env";
-import { logger } from "./server/logging";
 import { createHandlers } from "./logic/message-handlers";
+import { createServer } from "./server";
+import { logger } from "./server/logging";
 
 const main = async () => {
   const env = getEnv();
@@ -21,6 +22,8 @@ const main = async () => {
     .provide("messageHandlers", createHandlers(container));
 
   await createDatabase(env.mongoDatabase, env.mongoHost, env.mongoPort);
+
+  await migrate(container);
 
   createServer(env.socketPort, container).start();
 };

@@ -1,7 +1,7 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
 import { IModelOptions } from "@typegoose/typegoose/lib/types";
 import { Entity } from "./entity";
-import { BaseWord } from "@/common/entities";
+import { BaseWord, WordCategory } from "@/common/entities";
 
 const required = true;
 
@@ -24,6 +24,9 @@ class WordSchema<TType extends string>
 
   @prop({ type: String })
   context: string | undefined;
+
+  @prop({ type: [String] })
+  categories!: WordCategory[];
 }
 
 export { WordSchema };

@@ -1,4 +1,4 @@
-import { Verb } from "@/common/entities";
+import { Verb, WordCategories, WordCategory } from "@/common/entities";
 import { JSDOM } from "jsdom";
 import { Scraper } from ".";
 import { prompt } from "../menu";
@@ -6,7 +6,10 @@ import { prompt } from "../menu";
 const TextKey = "textContent";
 type Conjugations = [string, string, string, string, string, string];
 
-type VerbInfo = Pick<Verb, "infinitive" | "english" | "regular" | "context">;
+type VerbInfo = Pick<
+  Verb,
+  "infinitive" | "english" | "regular" | "context" | "categories"
+>;
 
 const getVerbData = (
   document: Document
@@ -20,6 +23,24 @@ const getVerbData = (
   return { infinitive, forms: { je, tu, il, nous, vous, ils } };
 };
 
+const getCategories = async (): Promise<WordCategory[]> => {
+  const loop = () => prompt("category", [...WordCategories, "done"]);
+
+  const categories: WordCategory[] = [];
+
+  while (true) {
+    const result = await loop();
+
+    if (result === "done") {
+      break;
+    }
+
+    categories.push(result);
+  }
+
+  return categories;
+};
+
 const scrapeVerb: Scraper<Verb, VerbInfo> = {
   menu: async () => {
     const info = {
@@ -27,6 +48,7 @@ const scrapeVerb: Scraper<Verb, VerbInfo> = {
       english: await prompt("english"),
       context: await prompt("context"),
       regular: await prompt("regular", ["y", "n"]),
+      categories: await getCategories(),
     };
 
     return { ...info, regular: info.regular === "y" ? true : false };
