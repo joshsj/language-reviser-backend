@@ -33,8 +33,6 @@ const removeChildren = (el: Element) => {
     .slice(startIndex)
     .findIndex((c) => (c as Child).tagName?.toLowerCase() === "br");
 
-  console.log(children[startIndex], children[endIndex]);
-
   const toRemove = [
     ...children.slice(0, startIndex),
     ...children.slice(startIndex + endIndex),
@@ -48,13 +46,9 @@ const getData = (document: Document) => {
 
   removeChildren(root);
 
-  Array.from(root.childNodes).forEach(console.log);
-
   const dataMatch = root.textContent!.match(
     /Inflections of '(?<m>.+)' \((?<type>.+)\):  (?<rest>.+)/
   )!.groups! as DataMatch;
-
-  console.log(dataMatch.rest);
 
   const rest = getRest(dataMatch.rest);
 

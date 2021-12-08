@@ -27,13 +27,11 @@ const loop = async (
     return false;
   }
 
+  const scraper = scrapers[wordOption];
+  const info = await scraper.menu();
   let word: Word | undefined = undefined;
 
   try {
-    const scraper = scrapers[wordOption];
-
-    const info = await scraper.menu();
-
     // i really wish this worked without an assertion
     word = await scraper.retrieve(info as any);
   } catch {
@@ -87,7 +85,11 @@ const main = async () => {
   let resume = true;
 
   while (resume) {
-    resume = await loop(socket, scrapers);
+    try {
+      resume = await loop(socket, scrapers);
+    } catch {
+      console.log("what did you do 😠");
+    }
   }
 
   console.log("closing socket");

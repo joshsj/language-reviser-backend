@@ -39,4 +39,29 @@ const prompt = <TOption = string, TRequired extends Optionality = "required">(
 const yesNo = (question: string = "okay?") =>
   prompt<"y" | "n">(question, "required", ["y", "n"]);
 
-export { prompt, yesNo, Optionality };
+const collect = async <TOption extends string, TDone extends string>(
+  question: string,
+  options: ReadonlyArray<TOption> = [],
+  done: TDone
+): Promise<TOption[]> => {
+  const loop = () =>
+    prompt<TOption | TDone>(question, "required", [...options, done]);
+
+  const values: TOption[] = [];
+
+  while (true) {
+    const result = await loop();
+
+    if (!result || result === done) {
+      break;
+    }
+
+    // breaking on result === done means
+    // result will only be TOptions
+    values.push(result as TOption);
+  }
+
+  return values;
+};
+
+export { prompt, yesNo, collect, Optionality };
