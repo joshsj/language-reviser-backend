@@ -6,10 +6,10 @@ import { id } from "../../data/utilities";
 const adjectivePre: {
   [K in AdjectiveType]: string;
 } = {
-  masculineSingular: "ms",
-  masculinePlural: "mp",
-  feminineSingular: "fs",
-  femininePlural: "fp",
+  masculineSingular: "(ms)",
+  masculinePlural: "(mp)",
+  feminineSingular: "(fs)",
+  femininePlural: "(fp)",
 };
 
 const adjectiveConverter: Converter<"adjective"> = {
