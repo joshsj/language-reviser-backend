@@ -1,6 +1,6 @@
 import { AdjectiveType, Subject } from "./language/composition";
 
-const WordCategories = ["people"] as const;
+const WordCategories = ["people", "ordering", "directions"] as const;
 type WordCategory = typeof WordCategories[number];
 
 type BaseWord<TType extends string> = {
