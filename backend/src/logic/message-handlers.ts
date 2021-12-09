@@ -1,7 +1,6 @@
 import { Container } from "@/common/dependency/container";
 import { ChallengeOptions, Word } from "@/common/entities";
 import { Entity } from "../data/entities";
-import * as filters from "../data/filters";
 import { Words } from "../data/models";
 import { id } from "../data/utilities";
 import { Dependencies, MessageHandler, MessageHandlers } from "../dependency";
@@ -10,6 +9,7 @@ import {
   toActiveChallenge,
   toChallenge,
 } from "./converters";
+import * as wordQuery from "./queries/word";
 
 const getRandomWord = async (
   words: Words,
@@ -17,7 +17,7 @@ const getRandomWord = async (
 ): Promise<Word | undefined> =>
   (
     await words.aggregate([
-      { $match: filters.challengeOptions(options) },
+      { $match: wordQuery.fromChallengeOptions(options) },
       { $sample: { size: 1 } },
     ])
   )[0];

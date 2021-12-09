@@ -42,6 +42,7 @@ type AdjectiveOptions = {};
 type ChallengeOptions = {
   verb?: VerbOptions;
   adjective?: AdjectiveOptions;
+  categories?: WordCategory[];
 };
 
 export {
