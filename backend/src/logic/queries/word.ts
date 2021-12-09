@@ -22,6 +22,9 @@ const challengeOptionsFilters: {
 
   categories: ({ categories }) =>
     categories && categories.length ? { categories: { $in: categories } } : {},
+
+  adverbs: ({ adverbs }) =>
+    typeof adverbs !== "undefined" ? { type: "adverb" } : {},
 };
 
 const fromChallengeOptions = (options: ChallengeOptions): FilterQuery<Word> => {

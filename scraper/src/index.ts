@@ -4,14 +4,19 @@ import { Word } from "@/common/entities";
 import { scrapeVerb } from "./scrapers/verb";
 import { ClientMessage } from "@/common/messages";
 import { scrapeAdjective } from "./scrapers/adjective";
+import { scrapeAdverb } from "./scrapers/adverb";
 
 type Env = { serverUrl: string };
-type Scrapers = { verb: typeof scrapeVerb; adjective: typeof scrapeAdjective };
+type Scrapers = {
+  verb: typeof scrapeVerb;
+  adjective: typeof scrapeAdjective;
+  adverb: typeof scrapeAdverb;
+};
 
 const QuitOption = "quit";
 type QuitOption = typeof QuitOption;
 
-type WordOption = Extract<Word["type"], "verb" | "adjective">;
+type WordOption = Word["type"];
 
 const loop = async (
   socket: WebSocket,
@@ -20,7 +25,7 @@ const loop = async (
   const wordOption = await prompt<WordOption | QuitOption>(
     "word option",
     "required",
-    ["verb", "adjective", QuitOption]
+    ["verb", "adjective", "adverb", QuitOption]
   );
 
   if (!wordOption || wordOption === QuitOption) {
@@ -80,7 +85,11 @@ const main = async () => {
   const { serverUrl } = process.env as Env;
 
   const socket = await createSocket(serverUrl);
-  const scrapers: Scrapers = { verb: scrapeVerb, adjective: scrapeAdjective };
+  const scrapers: Scrapers = {
+    verb: scrapeVerb,
+    adjective: scrapeAdjective,
+    adverb: scrapeAdverb,
+  };
 
   let resume = true;
 

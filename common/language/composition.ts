@@ -17,6 +17,9 @@ type AdjectiveType =
   // Intersect ensures correct implementation in array
   `${Gender}${Capitalize<Plurality>}` & typeof AdjectiveTypes[number];
 
+const AdverbOfs = ["place"] as const;
+type AdverbOf = typeof AdverbOfs[number];
+
 export {
   Genders,
   Gender,
@@ -26,4 +29,6 @@ export {
   Subject,
   AdjectiveTypes,
   AdjectiveType,
+  AdverbOf,
+  AdverbOfs,
 };

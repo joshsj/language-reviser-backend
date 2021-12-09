@@ -10,6 +10,7 @@ import {
 import { ActiveChallengeSchema } from "./schemas/active-challenge";
 
 import { AdjectiveSchema } from "./schemas/adjective";
+import { AdverbSchema } from "./schemas/adverb";
 import { VerbSchema } from "./schemas/verb";
 import { WordSchema } from "./schemas/word";
 
@@ -25,8 +26,10 @@ type Models = { words: Words; activeChallenges: ActiveChallenges };
 
 const createModels = (): Models => {
   const WordModel: Words = getModelForClass(WordSchema);
+
   getDiscriminatorModelForClass(WordModel, AdjectiveSchema, "adjective");
   getDiscriminatorModelForClass(WordModel, VerbSchema, "verb");
+  getDiscriminatorModelForClass(WordModel, AdverbSchema, "adverb");
 
   const ActiveChallengeModel: ActiveChallenges = getModelForClass(
     ActiveChallengeSchema

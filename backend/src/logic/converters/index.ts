@@ -3,6 +3,7 @@ import { random } from "@/common/utilities";
 import { ActiveChallenge } from "../../data/entities";
 import { Session } from "../../dependency";
 import { adjectiveConverter } from "./adjective";
+import { adverbConverter } from "./adverb";
 import { verbConverter } from "./verb";
 
 type Converter<T extends Word["type"]> = {
@@ -19,15 +20,19 @@ type Converter<T extends Word["type"]> = {
 
 type EverythingChallenge = Challenge & ActiveChallenge;
 
+const converters: { [K in Word["type"]]: Converter<K> } = {
+  adjective: adjectiveConverter,
+  verb: verbConverter,
+  adverb: adverbConverter,
+};
+
 const toEverythingChallenge = (
   word: Word,
   session: Session
 ): EverythingChallenge => {
-  const converter =
-    word["type"] === "adjective" ? adjectiveConverter : verbConverter;
   const direction = !!random(1) ? "inEnglish" : "inFrench";
 
-  return converter[direction](word as any, session);
+  return converters[word.type][direction](word as any, session);
 };
 
 const toActiveChallenge = ({

@@ -1,13 +1,11 @@
-import { Adjective } from "@/common/entities";
+import { Adjective, BaseWord } from "@/common/entities";
 import { JSDOM } from "jsdom";
 import { Scraper } from ".";
 import { prompt } from "../menu";
-import { getWordBase } from "./utilities";
+import { getBaseWord } from "./utilities";
 
-type AdjectiveInfo = Pick<
-  Adjective,
-  "english" | "context" | "categories" | "masculineSingular"
->;
+type AdjectiveInfo = BaseWord<"adjective"> &
+  Pick<Adjective, "masculineSingular">;
 
 type DataMatch = {
   type: "adj" | string;
@@ -57,7 +55,7 @@ const getData = (document: Document) => {
 
 const scrapeAdjective: Scraper<Adjective, AdjectiveInfo> = {
   menu: async () => ({
-    ...(await getWordBase()),
+    ...(await getBaseWord("adjective")),
     masculineSingular: await prompt("masculine singular", "required"),
   }),
 
@@ -70,7 +68,6 @@ const scrapeAdjective: Scraper<Adjective, AdjectiveInfo> = {
 
     return {
       ...info,
-      type: "adjective",
       masculineSingular: data.m,
       feminineSingular: data.rest[0][1],
       masculinePlural: data.rest[1][1],

@@ -1,16 +1,13 @@
-import { Verb } from "@/common/entities";
+import { BaseWord, Verb } from "@/common/entities";
 import { JSDOM } from "jsdom";
 import { Scraper } from ".";
 import { prompt, yesNo } from "../menu";
-import { getWordBase } from "./utilities";
+import { getBaseWord } from "./utilities";
 
 const TextKey = "textContent";
 type Conjugations = [string, string, string, string, string, string];
 
-type VerbInfo = Pick<
-  Verb,
-  "infinitive" | "english" | "regular" | "context" | "categories"
->;
+type VerbInfo = BaseWord<"verb"> & Pick<Verb, "infinitive" | "regular">;
 
 const getData = (document: Document): Pick<Verb, "infinitive" | "forms"> => {
   const infinitive = document.querySelector("#ch_lblVerb")?.[TextKey]!;
@@ -25,7 +22,7 @@ const getData = (document: Document): Pick<Verb, "infinitive" | "forms"> => {
 const scrapeVerb: Scraper<Verb, VerbInfo> = {
   menu: async () => {
     const info = {
-      ...(await getWordBase()),
+      ...(await getBaseWord("verb")),
       infinitive: await prompt("infinitive", "required"),
       regular: await yesNo("regular"),
     };
@@ -38,7 +35,7 @@ const scrapeVerb: Scraper<Verb, VerbInfo> = {
 
     const { document } = (await JSDOM.fromURL(url)).window;
 
-    return { type: "verb", ...info, ...getData(document) };
+    return { ...info, ...getData(document) };
   },
 };
 

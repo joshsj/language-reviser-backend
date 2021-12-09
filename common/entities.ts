@@ -1,4 +1,4 @@
-import { AdjectiveType, Subject } from "./language/composition";
+import { AdjectiveType, AdverbOf, Subject } from "./language/composition";
 
 const WordCategories = ["people", "ordering", "directions"] as const;
 type WordCategory = typeof WordCategories[number];
@@ -22,7 +22,9 @@ type Verb = BaseWord<"verb"> & {
   forms: VerbForms;
 };
 
-type Word = Adjective | Verb;
+type Adverb = BaseWord<"adverb"> & { french: string; of: AdverbOf };
+
+type Word = Adjective | Verb | Adverb;
 
 type Challenge = {
   challengeId: string;
@@ -37,12 +39,13 @@ type Skip = { challengeId: string };
 type Attempt = Skip & { attempt: string };
 
 type VerbOptions = { regular: boolean; irregular: boolean };
-type AdjectiveOptions = {};
 
 type ChallengeOptions = {
-  verb?: VerbOptions;
-  adjective?: AdjectiveOptions;
   categories?: WordCategory[];
+
+  verb?: VerbOptions;
+  adjective?: boolean;
+  adverbs?: boolean;
 };
 
 export {
@@ -52,11 +55,11 @@ export {
   Word,
   VerbForms,
   Verb,
+  Adverb,
   Adjective,
   AdjectiveType,
   Attempt,
   VerbOptions,
-  AdjectiveOptions,
   Skip,
   Challenge,
   ChallengeOptions,
