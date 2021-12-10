@@ -9,7 +9,7 @@ type MessageHandler<T extends ClientMessageName> = (
   session: Session
 ) => Promise<T extends ServerMessageName ? Extract<ServerMessage, { name: T }> : void>;
 
-type MessageHandlers = { [K in ClientMessageName]: MessageHandler<K>[] };
+type MessageHandlers = { [K in ClientMessageName]: MessageHandler<K> | MessageHandler<K>[] };
 
 type Session = { clientId?: ClientId };
 

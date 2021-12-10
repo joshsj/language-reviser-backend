@@ -5,6 +5,7 @@ import { Dependencies, Session } from "../dependency";
 import { Container } from "@/common/dependency/container";
 import { IncomingMessage } from "http";
 import { guard } from "@/common/utilities/guard";
+import { arrayify } from "@/common/utilities";
 
 const updateContainer = (
   container: Container<Dependencies>,
@@ -61,7 +62,7 @@ const onMessage = async (socket: Socket, raw: Socket.Data, container: Container<
   // TODO: make safe
   const clientMessage = JSON.parse(clientMessageString);
 
-  handlers[clientMessage.name as ClientMessageName].forEach((h) =>
+  arrayify(handlers[clientMessage.name as ClientMessageName]).forEach((h) =>
     h(clientMessage, session).then((r) => sendResponse(socket, container, r))
   );
 };
