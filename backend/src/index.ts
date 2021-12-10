@@ -23,8 +23,6 @@ const main = async () => {
 
   await createDatabase(env.mongoDatabase, env.mongoHost, env.mongoPort);
 
-  await migrate(container);
-
   createServer(env.socketPort, container).start();
 };
 
