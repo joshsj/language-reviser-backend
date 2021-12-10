@@ -1,0 +1,47 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      BRANCH: "gh-pages"
+      REPO: "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+
+    steps:
+      - name: echo variables
+        run: |
+          echo "repository url: $REPO"
+          echo "deployment branch: $BRANCH"
+
+      - name: setup node
+        uses: actions/setup-node@v2
+
+      - name: clone main repository
+        run: git clone $REPO .
+
+      - name: delete main .git folder
+        run: rm -rf ./.git/
+
+      - name: build
+        working-directory: ./frontend/
+        run: npm run build
+
+      - name: setup deployment repository
+        working-directory: ./frontend/build/
+        run: |
+          git init
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+          git remote add origin $REPO
+
+      - name: deploy
+        working-directory: ./frontend/build/
+        run: |
+          git checkout -b $BRANCH
+          git add .
+          git commit -m Deploy
+          git push --force origin $BRANCH

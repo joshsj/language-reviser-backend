@@ -3,8 +3,14 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import path from "path";
 
-// https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base:
+    command === "build"
+      ? "/language-revisor/" // base path when deployed on github pages
+      : undefined,
+
+  build: { outDir: "build" },
+
   plugins: [vue(), vueJsx()],
 
   resolve: {
@@ -18,4 +24,4 @@ export default defineConfig({
       allow: [searchForWorkspaceRoot(process.cwd()), "../common"],
     },
   },
-});
+}));
