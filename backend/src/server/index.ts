@@ -1,10 +1,10 @@
 import Socket from "ws";
-import { _throw, _try } from "@/common/utilities";
 import { LoggerMode } from "@/common/dependency";
 import { ClientMessageName, ServerMessage } from "@/common/messages";
 import { Dependencies, Session } from "../dependency";
 import { Container } from "@/common/dependency/container";
 import { IncomingMessage } from "http";
+import { guard } from "@/common/utilities/guard";
 
 const updateContainer = (
   container: Container<Dependencies>,
@@ -61,42 +61,53 @@ const sendResponse = (
   }
 };
 
-const onMessage = (
+const onMessage = async (
   socket: Socket,
   raw: Socket.Data,
   container: Container<Dependencies>,
   session: Session
 ) => {
-  _throw("Message was not sent as a Buffer", !(raw instanceof Buffer));
+  const { handlers } = guard
+    .when(!(raw instanceof Buffer), "Message was not sent as a Buffer object")
+    .required(
+      { handlers: container.resolve("messageHandlers") },
+      "Missing required dependencies: handlers"
+    );
 
   const clientMessageString = raw.toString();
   container.resolve("logger")?.(`Received ${clientMessageString}.`);
 
+  // TODO: make safe
   const clientMessage = JSON.parse(clientMessageString);
 
-  const handlers = container.resolve("messageHandlers");
-
-  // TODO: make safe
-  handlers &&
-    handlers[clientMessage.name as ClientMessageName].forEach(async (h) =>
-      sendResponse(socket, container, await h(clientMessage, session))
-    );
+  handlers[clientMessage.name as ClientMessageName].forEach((h) =>
+    h(clientMessage, session).then((r) => sendResponse(socket, container, r))
+  );
 };
 
 const onClose = (container: Container<Dependencies>, { clientId }: Session) => {
-  const activeChallenges = container.resolve("activeChallenges");
+  const { models } = guard
+    .when(!clientId, "ClientId not provided")
+    .required(
+      { models: container.resolve("models") },
+      "Missing required dependency: models"
+    );
 
-  if (!(activeChallenges && clientId)) {
-    return;
-  }
-
-  activeChallenges
+  models.activeChallenges
     .deleteMany({ clientId })
     .then(({ deletedCount }) =>
       container.resolve("logger")?.(
         `Deleted ${deletedCount} Active Challenges with ClientId ${clientId}`
       )
     );
+};
+
+const handleException = (f: Function) => {
+  try {
+    f();
+  } catch {
+    // TODO: handle it ??
+  }
 };
 
 const createServer = (port: number, container: Container<Dependencies>) => {
@@ -109,8 +120,10 @@ const createServer = (port: number, container: Container<Dependencies>) => {
     configureLogging(socket, container);
 
     socket
-      .on("message", (raw) => onMessage(socket, raw, container, session))
-      .on("close", () => onClose(container, session));
+      .on("message", (raw) =>
+        handleException(() => onMessage(socket, raw, container, session))
+      )
+      .on("close", () => handleException(() => onClose(container, session)));
   });
 
   return { server };

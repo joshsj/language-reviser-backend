@@ -1,5 +1,6 @@
 import { Container } from "@/common/dependency/container";
 import { ChallengeOptions, Word } from "@/common/entities";
+import { guard } from "@/common/utilities/guard";
 import { Entity } from "../data/entities";
 import { Words } from "../data/models";
 import { id } from "../data/utilities";
@@ -25,21 +26,18 @@ const getRandomWord = async (
 const handleNewChallenge =
   (container: Container<Dependencies>): MessageHandler<"newChallenge"> =>
   async ({ message }, session) => {
-    const words = container.resolve("words");
-    const activeChallenges = container.resolve("activeChallenges");
+    const { models } = guard.required(
+      { models: container.resolve("models") },
+      (missing) => `Missing required dependencies: ${missing.join(", ")}`
+    );
 
-    if (!(words && activeChallenges)) {
-      return;
-    }
-
-    const word = await getRandomWord(words, message);
-
-    if (!word) {
-      return;
-    }
+    const { word } = guard.required(
+      { word: await getRandomWord(models.words, message) },
+      "No words found"
+    );
 
     const everything = toEverythingChallenge(word, session);
-    await activeChallenges.create(toActiveChallenge(everything));
+    await models.activeChallenges.create(toActiveChallenge(everything));
 
     return Promise.resolve({
       name: "newChallenge",
@@ -50,50 +48,62 @@ const handleNewChallenge =
 const handleAttempt =
   (container: Container<Dependencies>): MessageHandler<"attempt"> =>
   async ({ message: { challengeId, attempt } }) => {
-    const activeChallenges = container.resolve("activeChallenges");
-    const answerChecker = container.resolve("answerChecker");
+    const { models, answerChecker } = guard.required(
+      {
+        models: container.resolve("models"),
+        answerChecker: container.resolve("answerChecker"),
+      },
+      (missing) => `Missing required dependencies: ${missing.join(", ")}`
+    );
 
-    const activeChallenge = await activeChallenges?.findOne({
-      _id: challengeId,
-    });
-
-    // TODO: better error handling
-    if (!(activeChallenge && activeChallenges && answerChecker)) {
-      return;
-    }
+    const { activeChallenge } = guard.required(
+      {
+        activeChallenge: await models.activeChallenges.findOne({
+          _id: challengeId,
+        }),
+      },
+      `No ActiveChallenge was found with ChallengeId: ${challengeId}`
+    );
 
     const status = answerChecker(activeChallenge.answer, attempt);
 
     status === "correct" &&
-      (await activeChallenges.findByIdAndDelete(challengeId));
+      (await models.activeChallenges.findByIdAndDelete(challengeId));
 
-    return Promise.resolve({ name: "attempt", message: { result: status } });
+    return { name: "attempt", message: { result: status } };
   };
 
 const handleCreateWord =
   (container: Container<Dependencies>): MessageHandler<"createWord"> =>
   async ({ message: word }) => {
-    const words = container.resolve("words");
-
-    if (!words) {
-      return;
-    }
+    const { models } = guard.required(
+      { models: container.resolve("models") },
+      "Missing dependency: models"
+    );
 
     const entity: Entity<Word> = { ...word, _id: id() };
 
-    words.create(entity);
+    models.words.create(entity);
   };
 
 const handleSkip =
   (container: Container<Dependencies>): MessageHandler<"skip"> =>
   async ({ message: { challengeId } }) => {
-    const activeChallenge = await container
-      .resolve("activeChallenges")
-      ?.findByIdAndDelete(challengeId);
+    const { models } = guard.required(
+      { models: container.resolve("models") },
+      "Missing dependency: models"
+    );
 
-    return activeChallenge
-      ? { name: "skip", message: { answer: activeChallenge.answer } }
-      : undefined;
+    const { activeChallenge } = guard.required(
+      {
+        activeChallenge: await models.activeChallenges.findByIdAndDelete(
+          challengeId
+        ),
+      },
+      `No ActiveChallenge was found with ChallengeId: ${challengeId}`
+    );
+
+    return { name: "skip", message: { answer: activeChallenge.answer } };
   };
 
 const createHandlers = (

@@ -13,14 +13,16 @@ const createDatabase = async (
 
   /** Removes any stale data from previous uptime */
   clean: async (container: Container<Dependencies>) => {
-    const activeChallenges = container.resolve("activeChallenges");
+    const log = container.resolve("logger");
+    const models = container.resolve("models");
 
-    if (!activeChallenges) {
+    if (!models) {
+      log?.("Cannot clean the database, missing required dependency: models");
       return;
     }
 
-    container.resolve("logger")?.(`Deleting stale activeChallenges`);
-    await activeChallenges.deleteMany({});
+    log?.(`Deleting stale activeChallenges`);
+    await models.activeChallenges.deleteMany({});
   },
 });
 

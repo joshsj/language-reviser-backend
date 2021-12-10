@@ -16,8 +16,7 @@ const main = async () => {
   container
     .provide("logger", logger)
     .provide("answerChecker", answerChecker)
-    .provide("words", models.words)
-    .provide("activeChallenges", models.activeChallenges)
+    .provide("models", models)
     .provide("messageHandlers", createHandlers(container));
 
   const database = await createDatabase(
