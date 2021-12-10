@@ -5,7 +5,7 @@ import { Dependencies, Session } from "../dependency";
 import { Container } from "@/common/dependency/container";
 import { IncomingMessage } from "http";
 import { guard } from "@/common/utilities/guard";
-import { arrayify } from "@/common/utilities";
+import { arrayify } from "../utilities";
 
 const updateContainer = (
   container: Container<Dependencies>,
