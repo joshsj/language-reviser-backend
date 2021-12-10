@@ -100,22 +100,20 @@ const onClose = (container: Container<Dependencies>, { clientId }: Session) => {
 };
 
 const createServer = (port: number, container: Container<Dependencies>) => {
-  const start = () => {
-    const server = new Socket.Server({ host: "localhost", port });
+  const server = new Socket.Server({ host: "localhost", port });
 
-    server.on("connection", (socket, req) => {
-      const session = createSession(req);
+  server.on("connection", (socket, req) => {
+    const session = createSession(req);
 
-      updateContainer(container, session, req);
-      configureLogging(socket, container);
+    updateContainer(container, session, req);
+    configureLogging(socket, container);
 
-      socket
-        .on("message", (raw) => onMessage(socket, raw, container, session))
-        .on("close", () => onClose(container, session));
-    });
-  };
+    socket
+      .on("message", (raw) => onMessage(socket, raw, container, session))
+      .on("close", () => onClose(container, session));
+  });
 
-  return { start };
+  return { server };
 };
 
 export { createServer };

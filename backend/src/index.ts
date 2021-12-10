@@ -1,7 +1,6 @@
 import { createContainer } from "@/common/dependency/container";
 import { answerChecker } from "@/common/game";
 import { createDatabase } from "./data";
-import { migrate } from "./data/migrations";
 import { createModels } from "./data/models";
 import { Dependencies } from "./dependency";
 import { getEnv } from "./env";
@@ -21,9 +20,15 @@ const main = async () => {
     .provide("activeChallenges", models.activeChallenges)
     .provide("messageHandlers", createHandlers(container));
 
-  await createDatabase(env.mongoDatabase, env.mongoHost, env.mongoPort);
+  const database = await createDatabase(
+    env.mongoDatabase,
+    env.mongoHost,
+    env.mongoPort
+  );
 
-  createServer(env.socketPort, container).start();
+  await database.clean(container);
+
+  createServer(env.socketPort, container);
 };
 
 main();
