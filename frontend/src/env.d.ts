@@ -8,7 +8,8 @@ declare module "*.vue" {
 }
 
 interface ImportMetaEnv {
-  VITE_SERVER_URL: string;
+  VITE_SERVER_HOST: string;
+  VITE_SERVER_PORT: string;
 }
 
 interface ImportMeta {

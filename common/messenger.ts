@@ -18,10 +18,11 @@ const configureLogging = (socket: WebSocket, logger: Logger | undefined) => {
 type MessageHandlers = { [K in ServerMessageName]: MessageHandler<K>[] };
 
 const createMessenger = <T extends { logger?: Logger }>(
-  url: string,
+  host: string,
+  port: number,
   container: Container<T>
 ): Promise<Messenger> => {
-  const socket = new WebSocket(`ws://${url}`);
+  const socket = new WebSocket(`ws://${host}:${port}`);
 
   const logger = container.resolve("logger") ?? (() => void 0);
   configureLogging(socket, logger);
