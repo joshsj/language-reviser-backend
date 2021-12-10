@@ -18,11 +18,7 @@ const cornerValues = {
   },
 };
 
-const cornerStyle = ({
-  corner,
-  relativeTo,
-  offset = "0",
-}: CornerStyle): CSSProperties => ({
+const cornerStyle = ({ corner, relativeTo, offset = "0" }: CornerStyle): CSSProperties => ({
   position: "absolute",
   ...cornerValues[corner](relativeTo, offset),
 });

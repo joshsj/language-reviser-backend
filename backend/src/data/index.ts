@@ -2,11 +2,7 @@ import { Container } from "@/common/dependency/container";
 import { connect } from "mongoose";
 import { Dependencies } from "../dependency";
 
-const createDatabase = async (
-  database: string,
-  host: string,
-  port: number
-) => ({
+const createDatabase = async (database: string, host: string, port: number) => ({
   connection: await connect(`mongodb://${host}:${port}`, {
     dbName: database,
   }),

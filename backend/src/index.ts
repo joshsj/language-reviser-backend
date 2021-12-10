@@ -19,11 +19,7 @@ const main = async () => {
     .provide("models", models)
     .provide("messageHandlers", createHandlers(container));
 
-  const database = await createDatabase(
-    env.mongoDatabase,
-    env.mongoHost,
-    env.mongoPort
-  );
+  const database = await createDatabase(env.mongoDatabase, env.mongoHost, env.mongoPort);
 
   await database.clean(container);
 

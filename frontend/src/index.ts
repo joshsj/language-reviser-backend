@@ -11,10 +11,7 @@ const main = async () => {
 
   const { VITE_SERVER_HOST: host, VITE_SERVER_PORT: port } = import.meta.env;
 
-  container.provide(
-    "messenger",
-    await createMessenger(host, parseInt(port), container)
-  );
+  container.provide("messenger", await createMessenger(host, parseInt(port), container));
 
   createApp(App, { container }).mount("#app");
 };

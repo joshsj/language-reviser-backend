@@ -9,29 +9,15 @@ type AccentHelper = {
   get: (char: string, d: Direction) => string;
 };
 
-type MessageHandler<T extends ServerMessageName> = (
-  message: Extract<ServerMessage, { name: T }>
-) => void;
+type MessageHandler<T extends ServerMessageName> = (message: Extract<ServerMessage, { name: T }>) => void;
 
 type Messenger = {
   publish: (message: ClientMessage) => Messenger;
 
-  subscribe: <T extends ServerMessageName>(
-    name: T,
-    callback: MessageHandler<T>
-  ) => Messenger;
+  subscribe: <T extends ServerMessageName>(name: T, callback: MessageHandler<T>) => Messenger;
 };
 
 type AnswerStatus = "correct" | "close" | "incorrect";
 type AnswerChecker = (attempt: string, answer: string) => AnswerStatus;
 
-export {
-  LoggerMode,
-  Logger,
-  AccentHelper,
-  Direction,
-  MessageHandler,
-  Messenger,
-  AnswerChecker,
-  AnswerStatus,
-};
+export { LoggerMode, Logger, AccentHelper, Direction, MessageHandler, Messenger, AnswerChecker, AnswerStatus };

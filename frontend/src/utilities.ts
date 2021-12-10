@@ -1,9 +1,7 @@
 type NoPayload = undefined;
 
 /* Provides the payload type for an emit declaration */
-function emitT<TPayload = NoPayload>(): TPayload extends NoPayload
-  ? () => void
-  : (_: TPayload) => void {
+function emitT<TPayload = NoPayload>(): TPayload extends NoPayload ? () => void : (_: TPayload) => void {
   return ((_: TPayload) => void 0) as any;
 }
 

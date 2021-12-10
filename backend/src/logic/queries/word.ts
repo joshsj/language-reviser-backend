@@ -2,9 +2,7 @@ import { ChallengeOptions, Word } from "@/common/entities";
 import { FilterQuery } from "mongoose";
 
 const challengeOptionsFilters: {
-  [K in keyof ChallengeOptions]?: (
-    options: ChallengeOptions
-  ) => FilterQuery<Word>;
+  [K in keyof ChallengeOptions]?: (options: ChallengeOptions) => FilterQuery<Word>;
 } = {
   verb: ({ verb }) => {
     if (!verb) {
@@ -20,11 +18,9 @@ const challengeOptionsFilters: {
     return isRegular.length ? { regular: { $in: isRegular } } : {};
   },
 
-  categories: ({ categories }) =>
-    categories && categories.length ? { categories: { $in: categories } } : {},
+  categories: ({ categories }) => (categories && categories.length ? { categories: { $in: categories } } : {}),
 
-  adverbs: ({ adverbs }) =>
-    typeof adverbs !== "undefined" ? { type: "adverb" } : {},
+  adverbs: ({ adverbs }) => (typeof adverbs !== "undefined" ? { type: "adverb" } : {}),
 };
 
 const fromChallengeOptions = (options: ChallengeOptions): FilterQuery<Word> => {

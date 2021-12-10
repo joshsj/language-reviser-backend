@@ -7,15 +7,9 @@ import { adverbConverter } from "./adverb";
 import { verbConverter } from "./verb";
 
 type Converter<T extends Word["type"]> = {
-  inEnglish: (
-    word: Extract<Word, { type: T }>,
-    session: Session
-  ) => EverythingChallenge;
+  inEnglish: (word: Extract<Word, { type: T }>, session: Session) => EverythingChallenge;
 
-  inFrench: (
-    word: Extract<Word, { type: T }>,
-    session: Session
-  ) => EverythingChallenge;
+  inFrench: (word: Extract<Word, { type: T }>, session: Session) => EverythingChallenge;
 };
 
 type EverythingChallenge = Challenge & ActiveChallenge;
@@ -26,30 +20,20 @@ const converters: { [K in Word["type"]]: Converter<K> } = {
   adverb: adverbConverter,
 };
 
-const toEverythingChallenge = (
-  word: Word,
-  session: Session
-): EverythingChallenge => {
+const toEverythingChallenge = (word: Word, session: Session): EverythingChallenge => {
   const direction = !!random(1) ? "inEnglish" : "inFrench";
 
   return converters[word.type][direction](word as any, session);
 };
 
-const toActiveChallenge = ({
+const toActiveChallenge = ({ _id, answer, clientId }: EverythingChallenge): ActiveChallenge => ({
   _id,
   answer,
   clientId,
-}: EverythingChallenge): ActiveChallenge => ({ _id, answer, clientId });
+});
 
 // Explicit to ensure properties like 'Answer' aren't exposed
-const toChallenge = ({
-  hint,
-  pre,
-  post,
-  context,
-  challengeId,
-  answerLength,
-}: EverythingChallenge): Challenge => ({
+const toChallenge = ({ hint, pre, post, context, challengeId, answerLength }: EverythingChallenge): Challenge => ({
   hint,
   pre,
   post,

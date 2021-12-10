@@ -13,10 +13,7 @@ const options: IModelOptions = {
 };
 
 @modelOptions(options)
-class WordSchema<TType extends Word["type"]>
-  extends Entity
-  implements BaseWord<TType>
-{
+class WordSchema<TType extends Word["type"]> extends Entity implements BaseWord<TType> {
   readonly type!: TType;
 
   @prop({ required })

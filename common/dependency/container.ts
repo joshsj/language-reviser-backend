@@ -1,11 +1,6 @@
-type Provide<T extends {}> = <TName extends keyof T>(
-  name: TName,
-  impl: T[TName]
-) => Container<T>;
+type Provide<T extends {}> = <TName extends keyof T>(name: TName, impl: T[TName]) => Container<T>;
 
-type Resolve<T extends {}> = <TName extends keyof T>(
-  name: TName
-) => T[TName] | undefined;
+type Resolve<T extends {}> = <TName extends keyof T>(name: TName) => T[TName] | undefined;
 
 type Container<T extends {}> = {
   provide: Provide<T>;

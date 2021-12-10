@@ -3,11 +3,7 @@ import { Converter } from ".";
 import { id } from "../../data/utilities";
 import { getAnswerLength } from "./utilities";
 
-const base = (
-  adverb: Adverb,
-  clientId: string | undefined,
-  direction: keyof Converter<any>
-) => {
+const base = (adverb: Adverb, clientId: string | undefined, direction: keyof Converter<any>) => {
   console.log(adverb);
 
   const _id = id();

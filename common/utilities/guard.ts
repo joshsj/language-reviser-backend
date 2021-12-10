@@ -6,16 +6,10 @@ type Error<T> = string | ((missing: Array<keyof T>) => string);
 
 const BadRequiredTypes = Object.freeze(["undefined", "null"]);
 
-const required = <T extends object>(
-  obj: T,
-  error: Error<T>
-): GuardRequired<T> => {
+const required = <T extends object>(obj: T, error: Error<T>): GuardRequired<T> => {
   const missing: Array<keyof T> = [];
 
-  Object.entries(obj).forEach(
-    ([k, o]) =>
-      BadRequiredTypes.includes(typeof o) && missing.push(k as keyof T)
-  );
+  Object.entries(obj).forEach(([k, o]) => BadRequiredTypes.includes(typeof o) && missing.push(k as keyof T));
 
   if (missing.length) {
     throw new Error(typeof error === "function" ? error(missing) : error);

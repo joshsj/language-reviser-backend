@@ -20,11 +20,7 @@ const updateContainer = (
   container.provide(
     "logger",
     logger
-      ? (s: string, mode?: LoggerMode) =>
-          logger(
-            `${remoteAddress} ${clientId ? `(${clientId}) ` : ""}:: ${s}`,
-            mode
-          )
+      ? (s: string, mode?: LoggerMode) => logger(`${remoteAddress} ${clientId ? `(${clientId}) ` : ""}:: ${s}`, mode)
       : logger
   );
 };
@@ -33,10 +29,7 @@ const createSession = ({ headers }: IncomingMessage): Session => ({
   clientId: headers["sec-websocket-key"]!,
 });
 
-const configureLogging = (
-  socket: Socket,
-  container: Container<Dependencies>
-) => {
+const configureLogging = (socket: Socket, container: Container<Dependencies>) => {
   const log = container.resolve("logger");
 
   if (!log) {
@@ -49,11 +42,7 @@ const configureLogging = (
   socket.on("close", () => log("Connection closed."));
 };
 
-const sendResponse = (
-  client: Socket,
-  container: Container<Dependencies>,
-  response: ServerMessage | void
-) => {
+const sendResponse = (client: Socket, container: Container<Dependencies>, response: ServerMessage | void) => {
   if (response) {
     const responseString = JSON.stringify(response);
     container.resolve("logger")?.(`Sending ${responseString}.`);
@@ -61,18 +50,10 @@ const sendResponse = (
   }
 };
 
-const onMessage = async (
-  socket: Socket,
-  raw: Socket.Data,
-  container: Container<Dependencies>,
-  session: Session
-) => {
+const onMessage = async (socket: Socket, raw: Socket.Data, container: Container<Dependencies>, session: Session) => {
   const { handlers } = guard
     .when(!(raw instanceof Buffer), "Message was not sent as a Buffer object")
-    .required(
-      { handlers: container.resolve("messageHandlers") },
-      "Missing required dependencies: handlers"
-    );
+    .required({ handlers: container.resolve("messageHandlers") }, "Missing required dependencies: handlers");
 
   const clientMessageString = raw.toString();
   container.resolve("logger")?.(`Received ${clientMessageString}.`);
@@ -88,17 +69,12 @@ const onMessage = async (
 const onClose = (container: Container<Dependencies>, { clientId }: Session) => {
   const { models } = guard
     .when(!clientId, "ClientId not provided")
-    .required(
-      { models: container.resolve("models") },
-      "Missing required dependency: models"
-    );
+    .required({ models: container.resolve("models") }, "Missing required dependency: models");
 
   models.activeChallenges
     .deleteMany({ clientId })
     .then(({ deletedCount }) =>
-      container.resolve("logger")?.(
-        `Deleted ${deletedCount} Active Challenges with ClientId ${clientId}`
-      )
+      container.resolve("logger")?.(`Deleted ${deletedCount} Active Challenges with ClientId ${clientId}`)
     );
 };
 
@@ -120,9 +96,7 @@ const createServer = (port: number, container: Container<Dependencies>) => {
     configureLogging(socket, container);
 
     socket
-      .on("message", (raw) =>
-        handleException(() => onMessage(socket, raw, container, session))
-      )
+      .on("message", (raw) => handleException(() => onMessage(socket, raw, container, session)))
       .on("close", () => handleException(() => onClose(container, session)));
   });
 

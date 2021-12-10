@@ -9,9 +9,7 @@ const configureLogging = (socket: WebSocket, logger: Logger | undefined) => {
 
   logger("Connection established.");
   socket.addEventListener("message", () => logger("Message received."));
-  socket.addEventListener("error", (err) =>
-    logger(`Error occurred, ${err}.`, "bad")
-  );
+  socket.addEventListener("error", (err) => logger(`Error occurred, ${err}.`, "bad"));
   socket.addEventListener("close", () => logger("Connection closed."));
 };
 
@@ -49,21 +47,16 @@ const createMessenger = <T extends { logger?: Logger }>(
     },
   };
 
-  socket.addEventListener(
-    "message",
-    ({ data: messageString }: { data: string }) => {
-      container.resolve("logger")?.(`Recieved ${messageString}`);
+  socket.addEventListener("message", ({ data: messageString }: { data: string }) => {
+    container.resolve("logger")?.(`Recieved ${messageString}`);
 
-      const message = JSON.parse(messageString) as ServerMessage;
+    const message = JSON.parse(messageString) as ServerMessage;
 
-      // TODO: make safe
-      messageHandlers[message.name].forEach((h) => h(message as any));
-    }
-  );
+    // TODO: make safe
+    messageHandlers[message.name].forEach((h) => h(message as any));
+  });
 
-  return new Promise((resolve) =>
-    socket.addEventListener("open", () => resolve(messenger))
-  );
+  return new Promise((resolve) => socket.addEventListener("open", () => resolve(messenger)));
 };
 
 export { createMessenger };

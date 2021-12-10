@@ -18,15 +18,13 @@ type QuitOption = typeof QuitOption;
 
 type WordOption = Word["type"];
 
-const loop = async (
-  socket: WebSocket,
-  scrapers: Scrapers
-): Promise<boolean> => {
-  const wordOption = await prompt<WordOption | QuitOption>(
-    "word option",
-    "required",
-    ["verb", "adjective", "adverb", QuitOption]
-  );
+const loop = async (socket: WebSocket, scrapers: Scrapers): Promise<boolean> => {
+  const wordOption = await prompt<WordOption | QuitOption>("word option", "required", [
+    "verb",
+    "adjective",
+    "adverb",
+    QuitOption,
+  ]);
 
   if (!wordOption || wordOption === QuitOption) {
     return false;
@@ -59,11 +57,7 @@ const loop = async (
 
     await new Promise<void>((resolve) => {
       socket.send(JSON.stringify(message), (e) => {
-        console.log(
-          e?.message
-            ? `word failed to send, ${e.message}`
-            : "word sent successfully"
-        );
+        console.log(e?.message ? `word failed to send, ${e.message}` : "word sent successfully");
 
         resolve();
       });
