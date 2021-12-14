@@ -7,6 +7,8 @@ import { IncomingMessage } from "http";
 import { guard } from "@/common/utilities/guard";
 import { arrayify } from "../utilities";
 
+type ErrorHandler = (e: any) => void;
+
 const updateContainer = (
   container: Container<Dependencies>,
   { clientId }: Session,
@@ -67,28 +69,25 @@ const onMessage = async (socket: Socket, raw: Socket.Data, container: Container<
   );
 };
 
-const onClose = (container: Container<Dependencies>, { clientId }: Session) => {
+const onClose = async (container: Container<Dependencies>, { clientId }: Session) => {
   const { models } = guard
     .when(!clientId, "ClientId not provided")
     .required({ models: container.resolve("models") }, "Missing required dependency: models");
 
-  models.activeChallenges
-    .deleteMany({ clientId })
-    .then(({ deletedCount }) =>
-      container.resolve("logger")?.(`Deleted ${deletedCount} Active Challenges with ClientId ${clientId}`)
-    );
+  const { deletedCount } = await models.activeChallenges.deleteMany({ clientId });
+  container.resolve("logger")?.(`Deleted ${deletedCount} Active Challenges with ClientId ${clientId}`);
 };
 
-const handleException = (f: Function) => {
+const handleException = async (f: (...args: any) => Promise<void>, errorHandler: ErrorHandler | undefined) => {
   try {
-    f();
-  } catch {
-    // TODO: handle it ??
+    await f();
+  } catch (e) {
+    errorHandler?.(e);
   }
 };
 
-const createServer = (port: number, container: Container<Dependencies>) => {
-  const server = new Socket.Server({ host: "localhost", port });
+const createServer = (host: string, port: number, container: Container<Dependencies>, errorHandler?: ErrorHandler) => {
+  const server = new Socket.Server({ host, port });
 
   server.on("connection", (socket, req) => {
     const session = createSession(req);
@@ -97,11 +96,11 @@ const createServer = (port: number, container: Container<Dependencies>) => {
     configureLogging(socket, container);
 
     socket
-      .on("message", (raw) => handleException(() => onMessage(socket, raw, container, session)))
-      .on("close", () => handleException(() => onClose(container, session)));
+      .on("message", (raw) => handleException(() => onMessage(socket, raw, container, session), errorHandler))
+      .on("close", () => handleException(() => onClose(container, session), errorHandler));
   });
 
   return { server };
 };
 
-export { createServer };
+export { createServer, ErrorHandler };

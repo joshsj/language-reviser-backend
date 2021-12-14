@@ -1,4 +1,5 @@
 type Env = {
+  socketHost: string;
   socketPort: number;
   mongoDatabase: string;
   mongoHost: string;
@@ -8,9 +9,10 @@ type Env = {
 type EnvFile = { [K in keyof Env]: string };
 
 const getEnv = (): Env => {
-  const { socketPort, mongoDatabase, mongoHost, mongoPort } = process.env as EnvFile;
+  const { socketHost, socketPort, mongoDatabase, mongoHost, mongoPort } = process.env as EnvFile;
 
   return {
+    socketHost,
     socketPort: parseInt(socketPort),
     mongoDatabase,
     mongoHost,
