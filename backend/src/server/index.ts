@@ -78,7 +78,7 @@ const onClose = async (container: Container<Dependencies>, { clientId }: Session
   container.resolve("logger")?.(`Deleted ${deletedCount} Active Challenges with ClientId ${clientId}`);
 };
 
-const handleException = async (f: (...args: any) => Promise<void>, errorHandler: ErrorHandler | undefined) => {
+const handleError = async (f: (...args: any) => Promise<void>, errorHandler: ErrorHandler | undefined) => {
   try {
     await f();
   } catch (e) {
@@ -96,8 +96,8 @@ const createServer = (host: string, port: number, container: Container<Dependenc
     configureLogging(socket, container);
 
     socket
-      .on("message", (raw) => handleException(() => onMessage(socket, raw, container, session), errorHandler))
-      .on("close", () => handleException(() => onClose(container, session), errorHandler));
+      .on("message", (raw) => handleError(() => onMessage(socket, raw, container, session), errorHandler))
+      .on("close", () => handleError(() => onClose(container, session), errorHandler));
   });
 
   return { server };
